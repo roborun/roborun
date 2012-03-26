@@ -1,0 +1,3 @@
+Saker som skall skickas över:
+
+Vald robot(robottyp)

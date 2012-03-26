@@ -1,0 +1,33 @@
+Starta programmet
+Gamepage(startmeny)
+	introduktion(how to play)
+	Start new game
+		Välja username
+		Välja bana
+		Välja robot
+		Bli tilldelad färg
+	Find a game
+		En lista på spelare
+		Välja robot
+		Välja username
+		Bli tilldelad färg
+Spelet
+	Spelplanen skapas
+		Flaggorna slumpas ut på hårdkodade positioner
+	Få en random plats
+	Korten delas ut
+	Man får välja kort
+	Valda kort läggs på botten
+	Rond ett börjar
+		Den med högst värde på sitt kort börjar
+		Alla spelare går i ordning efter sina värden på korten
+		Det kollas hela tiden om man står på ett hål
+		Efter varje omgång
+			skall banden gå
+			Kugghjulen skall snurra
+			Kolla om man skall skjuta
+			Kolla om man står på reparation, flagga, hål eller laser
+	Kör om tills spelet är slut
+	
+	
+Nice to have's
