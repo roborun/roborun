@@ -1,0 +1,34 @@
+PAGES
+	-PageBase
+		StartPage
+		EndPage
+		-GamePageBase
+			CreateGamePage
+			FindGamePage
+
+UTILS
+	ConnectionManager
+	GameCamera
+	ObjectConstants(konstanter för olika objekt)
+
+MODELS
+	ModelDatabase
+	PlayerData
+	GameData
+
+CONTROLLERS
+	GameController
+	StateController
+	
+GAMEOBJECTS
+	Robot(PlayerData) -skapar instanser av grafik beroende på playerdata
+	GameCard
+	LEVELOBJECTS
+		-LevelObjectBase
+			RotationPlatform
+			Whole
+			Laser
+			Wall(kloss)
+		TRACKS
+			StraightTrack
+			TurnTrack
