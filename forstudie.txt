@@ -1,0 +1,23 @@
+Förstudie av examensarbete
+
+Projektets namn: RoboRun
+
+Av: Elias Johnasson & Anton Strand
+
+Sammanfattning:
+Ett turbaserat multiplayer-strategi spel där spelarna får flytta runt robotar för att komma till ett, av spelarna, utvalt antal flaggor på banor med utplacerade hinder, rullband, fällor och reparations/bonus/upgrade-stationer.
+
+Syfte och mål:
+Ett självgivet uppdrag där vi ska framställa ett fungerande multiplayer spel, där vi får lära oss om multiplayer(peer to peer) och utforska 3d i actionscript.
+
+
+Avgränsningar:
+Grafik och flera banor är medräknade, men vid eventuell tidsbrist faller först banor bort, sedan grafik.
+
+Tidsplan:
+1a veckan skiss, djupare planering och research
+2a veckan research och tester
+3 veckor grund kodning, bana, peer to peer(sammankoppling över nätet) samt testa dummygrafik
+2 veckor framställa spelmotoriken
+2 veckor framställa grafik, implementera grafik
+2 veckor buggtestning, rapport och final touches
