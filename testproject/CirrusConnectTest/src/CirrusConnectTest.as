@@ -20,9 +20,9 @@ package
 		private var _user			:String;
 		private var _isConnected	:Boolean;
 		private var _seq			:uint;
-		private var _history_tf:TextField;
-		private var _username_tf:TextField;
-		private var _message_tf:TextField;
+		private var _history_tf		:TextField;
+		private var _username_tf	:TextField;
+		private var _message_tf		:TextField;
 		
 		public function CirrusConnectTest()
 		{
