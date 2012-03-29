@@ -4,6 +4,7 @@ package
 	import com.roborun.p2pupdate.events.ConnectionManagerEvent;
 	import com.roborun.p2pupdate.utils.ConnectionManager;
 	import com.roborun.p2pupdate.utils.LevelCreator;
+	import com.roborun.p2pupdate.views.Card;
 	import com.roborun.p2pupdate.views.Robot;
 	
 	import flash.display.Sprite;
@@ -21,6 +22,8 @@ package
 		private var _players		:Vector.<Robot>;
 		private var _playerCount	:uint;
 		private var _cur_player_idx	:uint;
+		
+		private var _cardHolder		:Sprite;
 		
 		public function P2PUpdate()
 		{
@@ -44,7 +47,24 @@ package
 			ConnectionManager.eventDispatcher.addEventListener(ConnectionManagerEvent.CONNECTED, startGame);
 			ConnectionManager.eventDispatcher.addEventListener(ConnectionManagerEvent.MESSAGE_RECEIVED, onMessageReceived_movePlayer);
 			
+			addCards();
+			
+		}
 		
+		private function addCards(): void
+		{
+			_cardHolder = new Sprite();
+			
+			for (var i:uint = 0; i < 5; i++) 
+			{
+				var card : Card = new Card();
+				card.x = i * (card.width +20);
+				_cardHolder.addChild( card );
+			}
+			
+			_cardHolder.y = 570;
+			_cardHolder.x = 100;
+			addChild( _cardHolder );
 			
 		}
 		
@@ -83,24 +103,51 @@ package
 				initPlayer();	
 				addEventListener(Event.ENTER_FRAME, onLoop_update);
 			}
+			
+			if( _message.xpos != 0 ) _players[ _cur_player_idx ].moveX = _message.xpos * 50;	
+			if( _message.ypos != 0 ) _players[ _cur_player_idx ].moveY = _message.ypos * 50;
+			_players[ _cur_player_idx ].rotate = _message.rotate;
 		}
 		
 		
 		private function onLoop_update( e:Event ): void
 		{
-			
-			_players[ _cur_player_idx ].x = _message.xpos * 50;	
-			_players[ _cur_player_idx ].y = _message.ypos * 50;	
+			/*_players[ _cur_player_idx ].x = ( _players[ _cur_player_idx ].x + _message.xpos * 50 );	
+			_players[ _cur_player_idx ].y = ( _players[ _cur_player_idx ].y + _message.ypos * 50 );*/	
 		}
 		
 		private function onClick_movePlayer( e:MouseEvent ): void
 		{
+			trace( e.target );
+			
+			var targetCard : Card = Card( e.target );
+			
 			var message : Object = {};
 			
-			//message.xpos = _players[ _cur_player_idx ].x + 100;
-			message.xpos = uint(mouseX/50);
-			message.ypos = uint(mouseY/50);
-			message.rotate = 'none';
+			message.cardType = targetCard.type;
+			
+			if( _players[ _cur_player_idx ].robotRotation == 90 )
+			{
+				message.ypos = targetCard.steps;
+			}
+
+			else if( _players[ _cur_player_idx ].robotRotation == 270 || _players[ _cur_player_idx ].robotRotation == -90 )
+			{
+				message.ypos = -targetCard.steps;
+			}
+
+			else if( _players[ _cur_player_idx ].robotRotation == 0 )
+			{
+				message.xpos = targetCard.steps;
+			}
+
+			else if( _players[ _cur_player_idx ].robotRotation == -180 || _players[ _cur_player_idx ].robotRotation == 180 )
+			{
+				message.xpos = -targetCard.steps;
+			}
+			
+			
+			message.rotate = targetCard.cardRotation;
 			
 			ConnectionManager.sendMessage( message );
 		}
@@ -110,6 +157,7 @@ package
 		{
 			
 			_players.push( new Robot( _message.sender ) );
+			
 			addChild( _players[ _playerCount ] );
 			_playerCount++;
 			
