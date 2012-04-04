@@ -6,7 +6,7 @@ package com.roborun.p2pupdate.views
 	{
 		private var _id 	:String;
 		private var _gfx	:Sprite;
-		
+
 		public function Robot( id:String )
 		{
 			_id = id;
@@ -41,7 +41,7 @@ package com.roborun.p2pupdate.views
 		
 		private function initGfx(): void
 		{
-			_gfx.graphics.beginFill( 0xffcc00 );
+			_gfx.graphics.beginFill( 0xFFcc00 );
 			_gfx.graphics.drawRect( -25, -25, 50, 50 );
 			_gfx.graphics.lineStyle( 1 );
 			_gfx.graphics.moveTo( 0,0 );

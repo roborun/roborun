@@ -52,6 +52,7 @@ package com.roborun.p2pupdate.utils
 				
 				case 'NetGroup.Connect.Success':
 					_isConnected = true;
+					
 					_eventDispatcher.dispatchEvent( new ConnectionManagerEvent( ConnectionManagerEvent.CONNECTED ) );
 					break;
 				

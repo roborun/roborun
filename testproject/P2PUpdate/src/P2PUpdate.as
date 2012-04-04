@@ -3,6 +3,8 @@ package
 	import com.roborun.p2pupdate.RobotConstants;
 	import com.roborun.p2pupdate.events.ConnectionManagerEvent;
 	import com.roborun.p2pupdate.utils.ConnectionManager;
+	import com.roborun.p2pupdate.utils.GameCamera;
+	import com.roborun.p2pupdate.utils.KeyboardManager;
 	import com.roborun.p2pupdate.utils.LevelCreator;
 	import com.roborun.p2pupdate.views.Card;
 	import com.roborun.p2pupdate.views.Robot;
@@ -16,7 +18,7 @@ package
 	public class P2PUpdate extends Sprite
 	{
 		private var _levelCreator	:LevelCreator;	
-		private var _player			:Sprite;
+		private var _gameContainer	:Sprite;
 		
 		private var _message		:Object;
 		
@@ -26,6 +28,7 @@ package
 		private var _prevPos		:Point;
 		
 		private var _cardHolder		:Sprite;
+		private var _gameCamera		:GameCamera;
 		
 		public function P2PUpdate()
 		{
@@ -36,12 +39,21 @@ package
 		{
 			ConnectionManager.connect();
 			
+			
+			var keyboardManager : KeyboardManager = new KeyboardManager( stage );
+			
 			_message = {};
 			_players = new Vector.<Robot>();
 			_prevPos = new Point();
 			
+			_gameContainer = new Sprite();
+			addChild( _gameContainer );
+			
 			_levelCreator = new LevelCreator();
-			addChild( _levelCreator.level );
+			_gameContainer.addChild( _levelCreator.level );
+			
+			_gameCamera = new GameCamera( _gameContainer );
+			addChild( _gameCamera );
 			
 			addEventListener(MouseEvent.CLICK, onClick_movePlayer);
 			
@@ -73,9 +85,14 @@ package
 		{
 			//ConnectionManager.eventDispatcher.removeEventListener(ConnectionManagerEvent.CONNECTED, startGame);
 			trace( 'Start Game' );
+			
 			var m : Object = {};
 			
 			m.type = RobotConstants.NEW_ROBOT;
+			m.color = Math.random()* 0xFFFFFF;
+			//m.startposX = _levelCreator.startPositions[ _playerCount ].x * 50;
+			//m.startposY = _levelCreator.startPositions[ _playerCount ].y * 50;
+			
 			
 			ConnectionManager.sendMessage( m );
 		}
@@ -116,7 +133,7 @@ package
 			{
 				if( _message.xpos < 0 && _players[ _cur_player_idx ].x > ( _prevPos.x + _message.xpos * 50 ))
 				{
-					if( _levelCreator.levelDesign[ _players[ _cur_player_idx ].y / 50 ][ _players[ _cur_player_idx ].x / 50 - 1 ] != 1 )
+					if( _levelCreator.levelDesign[ uint(_players[ _cur_player_idx ].y / 50 )][ Math.ceil(_players[ _cur_player_idx ].x / 50 - 1 )] != 1 )
 					{
 						_players[ _cur_player_idx ].moveX = -5;					
 					}
@@ -124,7 +141,7 @@ package
 
 				if( _message.xpos > 0 && _players[ _cur_player_idx ].x < ( _prevPos.x + _message.xpos * 50 ))
 				{
-					if( _levelCreator.levelDesign[ _players[ _cur_player_idx ].y / 50 ][ _players[ _cur_player_idx ].x / 50 + 1 ] != 1 )
+					if( _levelCreator.levelDesign[ uint(_players[ _cur_player_idx ].y / 50 )][ Math.floor(_players[ _cur_player_idx ].x / 50 + 1 )] != 1 )
 					{
 						_players[ _cur_player_idx ].moveX = 5;					
 					}
@@ -149,6 +166,8 @@ package
 					}
 				}
 			}
+			
+			_gameCamera.update();
 		}
 		
 		private function onClick_movePlayer( e:MouseEvent ): void
@@ -191,12 +210,15 @@ package
 		private function initPlayer(): void
 		{
 			
+			
 			_players.push( new Robot( _message.sender ) );
 			
-			_players[ _playerCount ].x = 50;
-			_players[ _playerCount ].y = 50;
+			_players[ _playerCount ].x = _levelCreator.startPositions[ _playerCount ].x * 50;
+			_players[ _playerCount ].y = _levelCreator.startPositions[ _playerCount ].y * 50;
 			
-			addChild( _players[ _playerCount ] );
+			//_levelCreator.startPositions.splice(_message.posIdx, 1);
+			
+			_gameContainer.addChild( _players[ _playerCount ] );
 			_playerCount++;
 			
 			trace('player count:', _playerCount );
