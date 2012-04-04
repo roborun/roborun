@@ -10,6 +10,7 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	
 	[SWF(width="1024", height="768")]
 	public class P2PUpdate extends Sprite
@@ -22,6 +23,7 @@ package
 		private var _players		:Vector.<Robot>;
 		private var _playerCount	:uint;
 		private var _cur_player_idx	:uint;
+		private var _prevPos		:Point;
 		
 		private var _cardHolder		:Sprite;
 		
@@ -36,11 +38,10 @@ package
 			
 			_message = {};
 			_players = new Vector.<Robot>();
+			_prevPos = new Point();
 			
 			_levelCreator = new LevelCreator();
 			addChild( _levelCreator.level );
-			
-			//initPlayer();
 			
 			addEventListener(MouseEvent.CLICK, onClick_movePlayer);
 			
@@ -104,16 +105,50 @@ package
 				addEventListener(Event.ENTER_FRAME, onLoop_update);
 			}
 			
-			if( _message.xpos != 0 ) _players[ _cur_player_idx ].moveX = _message.xpos * 50;	
-			if( _message.ypos != 0 ) _players[ _cur_player_idx ].moveY = _message.ypos * 50;
+			_prevPos.x = _players[ _cur_player_idx ].x;
+			_prevPos.y = _players[ _cur_player_idx ].y;
 			_players[ _cur_player_idx ].rotate = _message.rotate;
 		}
 		
-		
 		private function onLoop_update( e:Event ): void
 		{
-			/*_players[ _cur_player_idx ].x = ( _players[ _cur_player_idx ].x + _message.xpos * 50 );	
-			_players[ _cur_player_idx ].y = ( _players[ _cur_player_idx ].y + _message.ypos * 50 );*/	
+			if( _message.xpos != 0 )
+			{
+				if( _message.xpos < 0 && _players[ _cur_player_idx ].x > ( _prevPos.x + _message.xpos * 50 ))
+				{
+					if( _levelCreator.levelDesign[ _players[ _cur_player_idx ].y / 50 ][ _players[ _cur_player_idx ].x / 50 - 1 ] != 1 )
+					{
+						_players[ _cur_player_idx ].moveX = -5;					
+					}
+				}
+
+				if( _message.xpos > 0 && _players[ _cur_player_idx ].x < ( _prevPos.x + _message.xpos * 50 ))
+				{
+					if( _levelCreator.levelDesign[ _players[ _cur_player_idx ].y / 50 ][ _players[ _cur_player_idx ].x / 50 + 1 ] != 1 )
+					{
+						_players[ _cur_player_idx ].moveX = 5;					
+					}
+				}
+			}
+
+			if( _message.ypos != 0 )
+			{
+				if( _message.ypos < 0 && _players[ _cur_player_idx ].y > ( _prevPos.y + _message.ypos * 50 ))
+				{
+					if( _levelCreator.levelDesign[ Math.ceil(_players[ _cur_player_idx ].y / 50 -1 )][uint( _players[ _cur_player_idx ].x / 50 )] != 1 )
+					{
+						_players[ _cur_player_idx ].moveY = -5;
+					}
+				}
+
+				if( _message.ypos > 0 && _players[ _cur_player_idx ].y < ( _prevPos.y + _message.ypos * 50 ))
+				{
+					if( _levelCreator.levelDesign[ Math.floor(_players[ _cur_player_idx ].y / 50 + 1 )][uint( _players[ _cur_player_idx ].x / 50 )] != 1 )
+					{
+						_players[ _cur_player_idx ].moveY = 5; 
+					}
+				}
+			}
 		}
 		
 		private function onClick_movePlayer( e:MouseEvent ): void
@@ -157,6 +192,9 @@ package
 		{
 			
 			_players.push( new Robot( _message.sender ) );
+			
+			_players[ _playerCount ].x = 50;
+			_players[ _playerCount ].y = 50;
 			
 			addChild( _players[ _playerCount ] );
 			_playerCount++;
