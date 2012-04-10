@@ -3,6 +3,8 @@ package
 	import com.roborun.p2pupdate.RobotConstants;
 	import com.roborun.p2pupdate.events.ConnectionManagerEvent;
 	import com.roborun.p2pupdate.utils.ConnectionManager;
+	import com.roborun.p2pupdate.utils.GameCamera;
+	import com.roborun.p2pupdate.utils.KeyboardManager;
 	import com.roborun.p2pupdate.utils.LevelCreator;
 	import com.roborun.p2pupdate.views.Card;
 	import com.roborun.p2pupdate.views.Robot;
@@ -10,20 +12,23 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	
 	[SWF(width="1024", height="768")]
 	public class P2PUpdate extends Sprite
 	{
 		private var _levelCreator	:LevelCreator;	
-		private var _player			:Sprite;
+		private var _gameContainer	:Sprite;
 		
 		private var _message		:Object;
 		
 		private var _players		:Vector.<Robot>;
 		private var _playerCount	:uint;
 		private var _cur_player_idx	:uint;
+		private var _prevPos		:Point;
 		
 		private var _cardHolder		:Sprite;
+		private var _gameCamera		:GameCamera;
 		
 		public function P2PUpdate()
 		{
@@ -34,13 +39,21 @@ package
 		{
 			ConnectionManager.connect();
 			
+			
+			var keyboardManager : KeyboardManager = new KeyboardManager( stage );
+			
 			_message = {};
 			_players = new Vector.<Robot>();
+			_prevPos = new Point();
+			
+			_gameContainer = new Sprite();
+			addChild( _gameContainer );
 			
 			_levelCreator = new LevelCreator();
-			addChild( _levelCreator.level );
+			_gameContainer.addChild( _levelCreator.level );
 			
-			//initPlayer();
+			_gameCamera = new GameCamera( _gameContainer );
+			addChild( _gameCamera );
 			
 			addEventListener(MouseEvent.CLICK, onClick_movePlayer);
 			
@@ -72,9 +85,14 @@ package
 		{
 			//ConnectionManager.eventDispatcher.removeEventListener(ConnectionManagerEvent.CONNECTED, startGame);
 			trace( 'Start Game' );
+			
 			var m : Object = {};
 			
 			m.type = RobotConstants.NEW_ROBOT;
+			m.color = Math.random()* 0xFFFFFF;
+			//m.startposX = _levelCreator.startPositions[ _playerCount ].x * 50;
+			//m.startposY = _levelCreator.startPositions[ _playerCount ].y * 50;
+			
 			
 			ConnectionManager.sendMessage( m );
 		}
@@ -104,16 +122,52 @@ package
 				addEventListener(Event.ENTER_FRAME, onLoop_update);
 			}
 			
-			if( _message.xpos != 0 ) _players[ _cur_player_idx ].moveX = _message.xpos * 50;	
-			if( _message.ypos != 0 ) _players[ _cur_player_idx ].moveY = _message.ypos * 50;
+			_prevPos.x = _players[ _cur_player_idx ].x;
+			_prevPos.y = _players[ _cur_player_idx ].y;
 			_players[ _cur_player_idx ].rotate = _message.rotate;
 		}
 		
-		
 		private function onLoop_update( e:Event ): void
 		{
-			/*_players[ _cur_player_idx ].x = ( _players[ _cur_player_idx ].x + _message.xpos * 50 );	
-			_players[ _cur_player_idx ].y = ( _players[ _cur_player_idx ].y + _message.ypos * 50 );*/	
+			if( _message.xpos != 0 )
+			{
+				if( _message.xpos < 0 && _players[ _cur_player_idx ].x > ( _prevPos.x + _message.xpos * 50 ))
+				{
+					if( _levelCreator.levelDesign[ uint(_players[ _cur_player_idx ].y / 50 )][ Math.ceil(_players[ _cur_player_idx ].x / 50 - 1 )] != 1 )
+					{
+						_players[ _cur_player_idx ].moveX = -5;					
+					}
+				}
+
+				if( _message.xpos > 0 && _players[ _cur_player_idx ].x < ( _prevPos.x + _message.xpos * 50 ))
+				{
+					if( _levelCreator.levelDesign[ uint(_players[ _cur_player_idx ].y / 50 )][ Math.floor(_players[ _cur_player_idx ].x / 50 + 1 )] != 1 )
+					{
+						_players[ _cur_player_idx ].moveX = 5;					
+					}
+				}
+			}
+
+			if( _message.ypos != 0 )
+			{
+				if( _message.ypos < 0 && _players[ _cur_player_idx ].y > ( _prevPos.y + _message.ypos * 50 ))
+				{
+					if( _levelCreator.levelDesign[ Math.ceil(_players[ _cur_player_idx ].y / 50 -1 )][uint( _players[ _cur_player_idx ].x / 50 )] != 1 )
+					{
+						_players[ _cur_player_idx ].moveY = -5;
+					}
+				}
+
+				if( _message.ypos > 0 && _players[ _cur_player_idx ].y < ( _prevPos.y + _message.ypos * 50 ))
+				{
+					if( _levelCreator.levelDesign[ Math.floor(_players[ _cur_player_idx ].y / 50 + 1 )][uint( _players[ _cur_player_idx ].x / 50 )] != 1 )
+					{
+						_players[ _cur_player_idx ].moveY = 5; 
+					}
+				}
+			}
+			
+			_gameCamera.update();
 		}
 		
 		private function onClick_movePlayer( e:MouseEvent ): void
@@ -156,9 +210,15 @@ package
 		private function initPlayer(): void
 		{
 			
+			
 			_players.push( new Robot( _message.sender ) );
 			
-			addChild( _players[ _playerCount ] );
+			_players[ _playerCount ].x = _levelCreator.startPositions[ _playerCount ].x * 50;
+			_players[ _playerCount ].y = _levelCreator.startPositions[ _playerCount ].y * 50;
+			
+			//_levelCreator.startPositions.splice(_message.posIdx, 1);
+			
+			_gameContainer.addChild( _players[ _playerCount ] );
 			_playerCount++;
 			
 			trace('player count:', _playerCount );
