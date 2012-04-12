@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="com.reyco1.multiuser.group.UserGroup"/>
+    <classEntry path="com.reyco1.multiuser.data.KeepAliveObject"/>
+    <classEntry path="com.reyco1.multiuser.events.UserStatusEvent"/>
+    <classEntry path="com.reyco1.multiuser.data.ListRoutingObject"/>
+    <classEntry path="com.reyco1.multiuser.group.ChatGroup"/>
+    <classEntry path="com.reyco1.multiuser.core.Session"/>
+    <classEntry path="com.reyco1.multiuser.events.ChatMessageEvent"/>
+    <classEntry path="com.reyco1.multiuser.channel.RealtimeChannel"/>
+    <classEntry path="com.reyco1.multiuser.channel.ChannelManager"/>
+    <classEntry path="com.reyco1.multiuser.MultiUserSession"/>
+    <classEntry path="com.reyco1.multiuser.events.P2PDispatcher"/>
+    <classEntry path="com.reyco1.multiuser.DirectLanConnection"/>
+    <classEntry path="com.reyco1.multiuser.data.UserObject"/>
+    <classEntry path="com.reyco1.multiuser.data.MessageObject"/>
+    <classEntry path="com.reyco1.multiuser.debug.Logger"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>
