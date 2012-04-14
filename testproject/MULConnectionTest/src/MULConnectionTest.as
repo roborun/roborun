@@ -40,22 +40,28 @@ package
 		
 		private function onConnect( user : UserObject ): void
 		{
-			Logger.log("I'm connected"+ user.name + ' id '+ user.id +", total "+ _connection.userCount);
-			stage.addEventListener(MouseEvent.MOUSE_MOVE, sendMyData);
-			
-			_userId = user.id;
-			_cursors[_userId] = new CursorSprite( user.name, user.details.color);
-			addChild( _cursors[_userId] );
+			if( _connection.userCount < 3)
+			{
+				Logger.log("I'm connected "+ user.name + ' id '+ user.id +", total "+ _connection.userCount);
+				stage.addEventListener(MouseEvent.MOUSE_MOVE, sendMyData);
+				
+				_userId = user.id;
+				_cursors[_userId] = new CursorSprite( user.name, user.details.color);
+				addChild( _cursors[_userId] );
+			}
 			
 		}
 		
 		private function onUserAdded( user : UserObject ): void
 		{
-			Logger.log("User added: " + user.name + ", total users: " + _connection.userCount);
-			_cursors[user.id] = new CursorSprite( user.name, user.details.color);
-			addChild( _cursors[user.id] );
-			
-			sendMyData();
+			if( _connection.userCount < 3)
+			{
+				Logger.log("User added: " + user.name + ", total users: " + _connection.userCount);
+				_cursors[user.id] = new CursorSprite( user.name, user.details.color);
+				addChild( _cursors[user.id] );
+				
+				sendMyData();
+			} else Logger.log("Too many users " + _connection.userCount);
 		}
 		
 		private function onUserDeleted( user : UserObject ): void
@@ -76,7 +82,6 @@ package
 		private function onGetObject( peerId :String, data:Object ): void
 		{
 			_cursors[ peerId ].update( data.x, data.y );
-			trace( peerId );
 		}
 	}
 }
