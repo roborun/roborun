@@ -6,6 +6,8 @@ package
 	
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
+	import flash.text.TextField;
+	import flash.text.TextFieldType;
 	
 	[SWF(frameRate="60", height="480", width="700")]
 	public class MULConnectionTest extends Sprite
@@ -17,16 +19,35 @@ package
 		private var _userName		:String;
 		private var _userId			:String;
 		private var _color			:uint;
+		private var _group_tf		:TextField;
+		private var _button:Sprite;
 		
 		public function MULConnectionTest()
 		{
 			Logger.LEVEL = Logger.LEVEL;
-			initialize();
+			setGroupName();
 		}
 		
-		private function initialize(): void
+		private function setGroupName(): void
 		{
-			_connection = new MultiUserSession(DEV_SERVER);
+			_group_tf = new TextField();
+			_group_tf.type = TextFieldType.INPUT;
+			_group_tf.border = true;
+			addChild( _group_tf );
+			
+			_button = new Sprite();
+			_button.graphics.beginFill( 0 );
+			_button.graphics.drawCircle(100, 100, 10);
+			addChild( _button );
+			
+			_button.addEventListener(MouseEvent.CLICK, initialize);
+		}
+		
+		private function initialize( e:MouseEvent ): void
+		{
+			var groupName : String = _group_tf.text;
+			
+			_connection = new MultiUserSession(DEV_SERVER, groupName);
 			_connection.onConnect = onConnect;
 			_connection.onUserAdded = onUserAdded;
 			_connection.onUserRemoved = onUserDeleted;
@@ -38,6 +59,9 @@ package
 			_color = Math.random()* 0xFFFFFF;
 			
 			 _connection.connect( _userName, {color: _color} );
+			 
+			 removeChild( _group_tf );
+			 removeChild( _button );
 			
 		}
 		
@@ -50,6 +74,7 @@ package
 			_userId = user.id;
 			_cursors[_userId] = new CursorSprite( user.name, user.details.color);
 			addChild( _cursors[_userId] );	
+			
 		
 		}
 		
@@ -58,10 +83,9 @@ package
 			Logger.log("User added: " + user.name + ", total users: " + _connection.userCount);
 			_cursors[user.id] = new CursorSprite( user.name, user.details.color);
 			addChild( _cursors[user.id] );
-
-			if( _connection.userCount > 2 ) deleteUser( user ); 
 			
 			sendMyData();	
+
 		}
 		
 		private function deleteUser( user : UserObject ): void
