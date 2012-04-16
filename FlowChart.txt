@@ -3,11 +3,12 @@ Gamepage(startmeny)
 	introduktion(how to play)
 	Start new game
 		Välja username
-		Välja bana
+		välja gruppnamn
+		alternativt Välja bana
 		Välja robot
 		Bli tilldelad färg
-	Find a game
-		En lista på spelare
+	Join a game
+		Textfält för att skriva in gruppnamn
 		Välja robot
 		Välja username
 		Bli tilldelad färg
