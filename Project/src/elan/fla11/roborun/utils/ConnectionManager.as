@@ -48,6 +48,8 @@ package elan.fla11.roborun.utils
 			_connection.onUserAdded = onUserAdded;
 			_connection.onObjectRecieve = onReceivingObject;
 			_connection.onChatMessage = onReceivingMessage;
+			
+			_connection.connect( userDetails.userName, userDetails );
 		}
 		
 		/**
