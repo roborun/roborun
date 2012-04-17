@@ -1,5 +1,6 @@
 package
 {
+	import elan.fla11.roborun.events.ConnectionEvent;
 	import elan.fla11.roborun.utils.ConnectionManager;
 	import elan.fla11.roborun.view.pages.NewGamePage;
 	import elan.fla11.roborun.view.pages.StartPage;
