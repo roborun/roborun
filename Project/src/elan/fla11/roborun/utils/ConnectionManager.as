@@ -10,7 +10,7 @@ package elan.fla11.roborun.utils
 	/**
 	 * ConnectionManager [STATIC] 
 	 * 
-	 * Send in groupName and userDetails (Object) to connect to an allready existing group or to create a new group.
+	 * Send in groupName and userDetails (Object) to connect to an already existing group or to create a new group.
 	 * 
 	 * @author Anton Strand.
 	 **/

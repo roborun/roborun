@@ -2,25 +2,32 @@ package elan.fla11.roborun.view.pages
 {
 	import elan.fla11.roborun.GamePageGfx;
 	import elan.fla11.roborun.GameSettings;
+	import elan.fla11.roborun.events.ButtonEvent;
+	import elan.fla11.roborun.view.gui.Button;
 	
+	import flash.events.MouseEvent;
 	import flash.text.TextFieldAutoSize;
 	
-	public class NewGamePage extends GamePageGfx
+	public class NewGamePage extends PageBase
 	{
+		private var _startBtn:Button;
+		
 		public function NewGamePage()
 		{
 			super();
-			this.width = GameSettings.STAGE_W;
-			this.height = GameSettings.STAGE_H;
-			this.HeadTf.autoSize = TextFieldAutoSize.LEFT;
-			this.UserNameTf.maxChars = 10;
-			this.UserNameTf.background = true;
-			this.UserNameTf.backgroundColor = 0xFFFFFF;
-			this.UserNameTf.restrict = 'A-Za-z0-9';
-			this.GroupNameTf.maxChars = 10;
-			this.GroupNameTf.background = true;
-			this.GroupNameTf.backgroundColor = 0xFFFFFF;
-			this.GroupNameTf.restrict = 'A-Za-z0-9';
+			HeadTf.text = 'New Game';
+			
+			_startBtn = new Button(GameSettings.BUTTON_COLOR);
+			_startBtn.Label.text = 'Start';
+			_startBtn.x = (GameSettings.STAGE_W - _startBtn.width) - GameSettings.BORDER_THICKNESS_X;
+			_startBtn.y = GameSettings.STAGE_H - GameSettings.BORDER_THICKNESS_Y;
+			addChild(_startBtn);
+			_startBtn.addEventListener(MouseEvent.CLICK, handleStartClicked);
+		}
+		
+		private function handleStartClicked(evt:MouseEvent):void
+		{
+			trace('Start Clicked');
 		}
 	}
 }
