@@ -1,6 +1,6 @@
 package elan.fla11.roborun.view.pages
 {
-	import elan.fla11.roborun.GameSettings;
+	import elan.fla11.roborun.settings.GameSettings;
 	import elan.fla11.roborun.StartPageGfx;
 	import elan.fla11.roborun.events.ButtonEvent;
 	import elan.fla11.roborun.view.gui.Button;

@@ -1,7 +1,7 @@
 package elan.fla11.roborun.view.pages
 {
 	import elan.fla11.roborun.GamePageGfx;
-	import elan.fla11.roborun.GameSettings;
+	import elan.fla11.roborun.settings.GameSettings;
 	import elan.fla11.roborun.view.gui.Button;
 	
 	import flash.events.MouseEvent;
@@ -9,7 +9,8 @@ package elan.fla11.roborun.view.pages
 	public class JoinGamePage extends PageBase
 	{
 		private var _joinBtn:Button;
-		
+	
+				
 		public function JoinGamePage()
 		{
 			super();
