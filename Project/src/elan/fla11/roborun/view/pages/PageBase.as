@@ -6,6 +6,7 @@ package elan.fla11.roborun.view.pages
 	import elan.fla11.roborun.view.gui.Button;
 	
 	import flash.events.MouseEvent;
+	import flash.text.TextFieldAutoSize;
 	
 	public class PageBase extends GamePageGfx
 	{
@@ -14,7 +15,7 @@ package elan.fla11.roborun.view.pages
 		public function PageBase()
 		{
 			super();
-		
+			HeadTf.autoSize = TextFieldAutoSize.LEFT;
 			_backBtn = new Button(GameSettings.BUTTON_COLOR);
 			_backBtn.x = GameSettings.BORDER_THICKNESS_X;
 			_backBtn.y = GameSettings.STAGE_H - GameSettings.BORDER_THICKNESS_Y;

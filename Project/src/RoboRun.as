@@ -3,6 +3,7 @@ package
 	import elan.fla11.roborun.events.ButtonEvent;
 	import elan.fla11.roborun.events.ConnectionEvent;
 	import elan.fla11.roborun.utils.ConnectionManager;
+	import elan.fla11.roborun.view.pages.InstructionsPage;
 	import elan.fla11.roborun.view.pages.JoinGamePage;
 	import elan.fla11.roborun.view.pages.NewGamePage;
 	import elan.fla11.roborun.view.pages.StartPage;
@@ -15,6 +16,7 @@ package
 		private var _startPage:StartPage;
 		private var _newGamePage:NewGamePage;
 		private var _joinGamePage:JoinGamePage;
+		private var _instructionsPage:InstructionsPage;
 		
 		public function RoboRun()
 		{
@@ -35,6 +37,9 @@ package
 			_joinGamePage = new JoinGamePage();
 			_joinGamePage.addEventListener(ButtonEvent.BACK, handleButtonClicked_back);
 			
+			_instructionsPage = new InstructionsPage();
+			_instructionsPage.addEventListener(ButtonEvent.BACK, handleButtonClicked_back);
+			
 			restart();
 		}
 		
@@ -45,6 +50,9 @@ package
 			
 			_joinGamePage.visible = false;
 			addChild(_joinGamePage);
+			
+			_instructionsPage.visible = false;
+			addChild(_instructionsPage);
 			
 			_startPage.visible = true;
 		}
@@ -66,6 +74,7 @@ package
 		private function showInstructions(evt:ButtonEvent):void
 		{
 			_startPage.visible = false;
+			_instructionsPage.visible = true;
 			trace('instructions');
 		}
 		
