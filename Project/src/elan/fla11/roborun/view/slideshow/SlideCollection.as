@@ -9,12 +9,12 @@ package elan.fla11.roborun.view.slideshow
 	
 	public class SlideCollection extends Sprite
 	{
-		private var _slides:Vector.<Slide>;
+		private var _slides:Vector.<SlideBase>;
 		
 		public function SlideCollection()
 		{
 			super();
-			_slides = new Vector.<Slide>();
+			_slides = new Vector.<SlideBase>();
 			addSlides();
 		}
 		
