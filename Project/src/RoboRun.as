@@ -1,7 +1,5 @@
 package
 {
-	
-	
 	import elan.fla11.roborun.controllers.PageController;
 	import elan.fla11.roborun.models.LevelModel;
 	import elan.fla11.roborun.settings.GameSettings;
@@ -38,7 +36,6 @@ package
 			lrp.x = GameSettings.GRID_SIZE;
 			addChild( lrp );
 		}
-		
 		
 	}
 }

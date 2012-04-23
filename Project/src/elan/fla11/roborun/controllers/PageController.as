@@ -60,21 +60,18 @@ package elan.fla11.roborun.controllers
 		{
 			_startPage.visible = false;
 			_newGamePage.visible = true;
-			trace('startNewGame');
 		}
 		
 		private function joinGame(evt:ButtonEvent):void
 		{
 			_startPage.visible = false;
 			_joinGamePage.visible = true;
-			trace('join game');
 		}
 		
 		private function showInstructions(evt:ButtonEvent):void
 		{
 			_startPage.visible = false;
 			_instructionsPage.visible = true;
-			trace('instructions');
 		}
 		
 		private function handleButtonClicked_back(evt:ButtonEvent):void

@@ -36,6 +36,5 @@ package elan.fla11.roborun.settings
 	
 		
 		// Camera view:  1000x500.  level: 2000x1000
-		
 	}
 }
