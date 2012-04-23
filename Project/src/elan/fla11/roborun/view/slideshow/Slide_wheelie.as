@@ -9,6 +9,7 @@ package elan.fla11.roborun.view.slideshow
 		public function Slide_wheelie()
 		{
 			super();
+			robotName = 'Wheelie';
 			_wheelie = new WheelieAnimationGfx();
 			addChild(_wheelie);
 		}

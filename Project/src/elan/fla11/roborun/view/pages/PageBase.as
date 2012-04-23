@@ -7,12 +7,14 @@ package elan.fla11.roborun.view.pages
 	import elan.fla11.roborun.view.slideshow.SlideShow;
 	
 	import flash.events.MouseEvent;
+	import flash.net.URLLoader;
 	import flash.text.TextFieldAutoSize;
 	
 	public class PageBase extends GamePageGfx
 	{
 		private var _backBtn:Button;
-		private var _slideShow:SlideShow;
+		protected var slideShow:SlideShow;
+		protected var loader:URLLoader;
 		
 		public function PageBase()
 		{
@@ -25,10 +27,10 @@ package elan.fla11.roborun.view.pages
 			addChild(_backBtn);
 			_backBtn.addEventListener(MouseEvent.CLICK, handleButtonClicked_back);
 			
-			_slideShow = new SlideShow();
-			_slideShow.x = (GameSettings.STAGE_W - _slideShow.slideShow_width) - GameSettings.BORDER_THICKNESS_Y;
-			_slideShow.y = GameSettings.BORDER_THICKNESS_Y;
-			addChild(_slideShow);
+			slideShow = new SlideShow();
+			slideShow.x = (GameSettings.STAGE_W - SlideShow.slideShow_width) - GameSettings.BORDER_THICKNESS_Y;
+			slideShow.y = GameSettings.BORDER_THICKNESS_Y;
+			addChild(slideShow);
 		}
 		
 		private function handleButtonClicked_back(evt:MouseEvent):void

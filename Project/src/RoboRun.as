@@ -1,7 +1,5 @@
 package
 {
-	
-	
 	import elan.fla11.roborun.controllers.PageController;
 	
 	import flash.display.Sprite;
@@ -21,7 +19,6 @@ package
 			_pageController = new PageController();
 			addChild( _pageController );
 		}
-		
 		
 	}
 }
