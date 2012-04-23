@@ -1,0 +1,8 @@
+<roborun>
+	<levels>
+		<level>
+			<title>First Level</title>
+			<source>../assets/levels/level0.jpg</source>
+		</level>
+	</levels>
+</roborun>
