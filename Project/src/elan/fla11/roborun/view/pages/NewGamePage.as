@@ -3,6 +3,7 @@ package elan.fla11.roborun.view.pages
 	import elan.fla11.roborun.GamePageGfx;
 	import elan.fla11.roborun.events.ButtonEvent;
 	import elan.fla11.roborun.settings.GameSettings;
+	import elan.fla11.roborun.utils.ConnectionManager;
 	import elan.fla11.roborun.view.gui.Button;
 	import elan.fla11.roborun.view.slideshow.SlideShow;
 	
@@ -29,6 +30,10 @@ package elan.fla11.roborun.view.pages
 		private function handleStartClicked(evt:MouseEvent):void
 		{
 			trace('Start Clicked');
+			/*if(GroupNameInput.Tf.length > 2)
+				ConnectionManager.connect(GroupNameInput.text, {});
+			else
+				trace('Please insert a username and groupname');*/
 		}
 	}
 }

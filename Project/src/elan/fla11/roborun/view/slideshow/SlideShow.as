@@ -17,8 +17,8 @@ package elan.fla11.roborun.view.slideshow
 		private var _slides:SlideCollection;
 		private var _mask:Sprite;
 		
-		public static var slideShow_width:Number = 500;
-		public static var slideShow_height:Number = 375;
+		public static const slideShow_width:Number = 500;
+		public static const slideShow_height:Number = 375;
 		
 		public function SlideShow()
 		{
