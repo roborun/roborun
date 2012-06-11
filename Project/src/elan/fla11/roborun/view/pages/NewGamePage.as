@@ -36,7 +36,6 @@ package elan.fla11.roborun.view.pages
 			addChild(_startBtn);
 			_startBtn.addEventListener(MouseEvent.CLICK, handleStartClicked);
 			
-<<<<<<< HEAD
 			_lvlBtn = new Button(GameSettings.BUTTON_COLOR);
 			_lvlBtn.Label.text = 'Choose level';
 			_lvlBtn.x = slideShow.x + slideShow.width/2 - _lvlBtn.width/2;
@@ -54,15 +53,13 @@ package elan.fla11.roborun.view.pages
 			
 			_lvlPage = new LevelPage();
 			_lvlPage.visible = false;
-			_lvlPage.x = this.width/2 - _lvlPage.width/2;
-			_lvlPage.y = this.height/2 - _lvlPage.height/2;
+			_lvlPage.x = (this.width/2 - _lvlPage.width/2)+_lvlPage._offset;
+			_lvlPage.y = (this.height/2 - _lvlPage.height/2)+_lvlPage._offset;
 			_lvlPage.addEventListener(ButtonEvent.CLOSE, handleCloseClicked);
 			addChild(_lvlPage);
-=======
 			trace( SlideCollection.robotIndex );
 			
 			
->>>>>>> b77e71e5b03b63d4a2ccd603b7fec9f6f8d2343e
 		}
 
 		private function handleChooseLvlClicked(evt:MouseEvent):void
