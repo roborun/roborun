@@ -26,11 +26,11 @@ package elan.fla11.roborun.view.gui
 			addChild(_scrollerSlide);
 			
 			addChild(_buttonUp);
-			_buttonUp.addEventListener(MouseEvent.CLICK, handleUpClicked);
+			_buttonUp.addEventListener(MouseEvent.MOUSE_DOWN, handleUpClicked);
 			
 			_buttonDown.y = scrollBarHeight - _buttonDown.height;
 			addChild(_buttonDown);
-			_buttonDown.addEventListener(MouseEvent.CLICK, handleDownClicked);
+			_buttonDown.addEventListener(MouseEvent.MOUSE_DOWN, handleDownClicked);
 		}
 		
 		private function handleScrollerSlide_scrolling(evt:Event):void

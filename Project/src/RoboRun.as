@@ -1,6 +1,8 @@
 package
 {
+	import elan.fla11.roborun.controllers.GameController;
 	import elan.fla11.roborun.controllers.PageController;
+	import elan.fla11.roborun.events.StartEvent;
 	import elan.fla11.roborun.models.LevelModel;
 	import elan.fla11.roborun.settings.GameSettings;
 	import elan.fla11.roborun.view.levelobjects.LaserPlate;
@@ -16,6 +18,9 @@ package
 	public class RoboRun extends Sprite
 	{
 		private var _pageController		:PageController;
+		private var _gameController		:GameController;
+		
+		private var _levelMdb			:LevelModel;
 		
 		public function RoboRun()
 		{
@@ -24,17 +29,22 @@ package
 		
 		private function init(): void
 		{
+			_gameController = new GameController();
+
 			_pageController = new PageController();
 			addChild( _pageController );
 			
-			var lvl : LevelModel = new LevelModel();
+			_levelMdb = new LevelModel();
 			
-			var l: HolePlate = new HolePlate(  );
-			addChild( l );
-
-			var lrp: LeftRotationPlate = new LeftRotationPlate();
-			lrp.x = GameSettings.GRID_SIZE;
-			addChild( lrp );
+			addEventListener(StartEvent.START_GAME, onStartGame);
+		}
+		
+		private function onStartGame( e:StartEvent ): void
+		{
+			trace(' start new game ');
+			removeChild( _pageController );
+			_gameController.setCurrentLevel( LevelModel.levels[e._levelId] );
+			addChild( _gameController );
 		}
 		
 	}
