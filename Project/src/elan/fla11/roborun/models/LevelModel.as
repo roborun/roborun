@@ -17,7 +17,7 @@ package elan.fla11.roborun.models
 	public class LevelModel
 	{
 		private var _levelLoader		:URLLoader;
-		private var _levels				:Vector.<LevelData>;
+		private static var _levels		:Vector.<LevelData>;
 		
 		public function LevelModel()
 		{
@@ -44,7 +44,7 @@ package elan.fla11.roborun.models
 			}
 		}
 		
-		public function get levels(): Vector.<LevelData>
+		public static function get levels(): Vector.<LevelData>
 		{
 			return _levels;
 		}

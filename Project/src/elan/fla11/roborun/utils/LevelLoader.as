@@ -31,6 +31,7 @@ package elan.fla11.roborun.utils
 		
 		public function LevelLoader()
 		{
+			_level = new Sprite();
 		}
 		
 		public function loadLevel( url:String ): void
@@ -41,10 +42,16 @@ package elan.fla11.roborun.utils
 			_levelLoader.load( new URLRequest( url ));
 		}
 		
+		public function get level(): Sprite
+		{
+			return _level;
+		}
+		
 		private function onComplete_createLevel( e:Event ): void
 		{
 			var levelDesign : BitmapData = Bitmap( _levelLoader.content ).bitmapData;
-			_level = new Sprite();
+			
+			trace( 'creating level' );
 			
 			for (var col:uint = 0; col < levelDesign.width; col++) 
 			{
@@ -52,6 +59,8 @@ package elan.fla11.roborun.utils
 				{
 					var levelObject : LevelObject;
 					
+					trace( levelDesign.getPixel( col, row ), 0x000000, levelDesign.getPixel( col, row ) ==  0x000000 );
+				
 					switch( levelDesign.getPixel( col, row ) )
 					{
 						case ColorCode.FLOOR:
@@ -139,8 +148,10 @@ package elan.fla11.roborun.utils
 							break;
 
 						case ColorCode.START_PLATE:
-							levelObject = new StartPlate( GameSettings.UP );
+							levelObject = new StartPlate();
 							break;
+						default:
+							levelObject = new LevelObject();
 							
 					}
 					

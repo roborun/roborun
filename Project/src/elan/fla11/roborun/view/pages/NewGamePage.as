@@ -5,9 +5,11 @@ package elan.fla11.roborun.view.pages
 	
 	import elan.fla11.roborun.GamePageGfx;
 	import elan.fla11.roborun.events.ButtonEvent;
+	import elan.fla11.roborun.events.StartEvent;
 	import elan.fla11.roborun.settings.GameSettings;
 	import elan.fla11.roborun.utils.ConnectionManager;
 	import elan.fla11.roborun.view.gui.Button;
+	import elan.fla11.roborun.view.slideshow.SlideCollection;
 	import elan.fla11.roborun.view.slideshow.SlideShow;
 	
 	import flash.display.Sprite;
@@ -34,6 +36,7 @@ package elan.fla11.roborun.view.pages
 			addChild(_startBtn);
 			_startBtn.addEventListener(MouseEvent.CLICK, handleStartClicked);
 			
+<<<<<<< HEAD
 			_lvlBtn = new Button(GameSettings.BUTTON_COLOR);
 			_lvlBtn.Label.text = 'Choose level';
 			_lvlBtn.x = slideShow.x + slideShow.width/2 - _lvlBtn.width/2;
@@ -55,6 +58,11 @@ package elan.fla11.roborun.view.pages
 			_lvlPage.y = this.height/2 - _lvlPage.height/2;
 			_lvlPage.addEventListener(ButtonEvent.CLOSE, handleCloseClicked);
 			addChild(_lvlPage);
+=======
+			trace( SlideCollection.robotIndex );
+			
+			
+>>>>>>> b77e71e5b03b63d4a2ccd603b7fec9f6f8d2343e
 		}
 
 		private function handleChooseLvlClicked(evt:MouseEvent):void
@@ -75,10 +83,23 @@ package elan.fla11.roborun.view.pages
 		private function handleStartClicked(evt:MouseEvent):void
 		{
 			trace('Start Clicked');
-			/*if(GroupNameInput.Tf.length > 2)
-				ConnectionManager.connect(GroupNameInput.text, {});
+			trace( 'Index', SlideCollection.robotIndex );
+			if(GroupNameInput.Tf.length > 2)
+			{
+				
+				trace( 'groupName', GroupNameInput.Tf.text );
+				trace( 'userName', UserNameInput.Tf.text );	
+				
+				var start_evt : StartEvent = new StartEvent( StartEvent.START_GAME, true );
+				start_evt._groupName = GroupNameInput.Tf.text;
+				start_evt._userDetails = {userName: UserNameInput.Tf.text, robot: SlideCollection.robotIndex, level: 0};
+				start_evt._levelId = 0;
+			
+				ConnectionManager.connect(GroupNameInput.Tf.text, {userName: UserNameInput.Tf.text, robot: SlideCollection.robotIndex, level: 0});
+				dispatchEvent( start_evt );
+			}
 			else
-				trace('Please insert a username and groupname');*/
+				trace('Please insert a username and groupname');
 		}
 	}
 }
