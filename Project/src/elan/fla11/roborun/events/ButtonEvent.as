@@ -8,6 +8,8 @@ package elan.fla11.roborun.events
 		public static const BACK			:String = 'Back_clicked';
 		public static const JOIN_GAME		:String = 'JoinGame_clicked';
 		public static const INSTRUCTIONS	:String = 'Instructions_clicked';
+		public static const CLOSE			:String = 'Close_clicked';
+		public static const LVLCHOSEN		:String = 'Choose_clicked';
 		
 		public function ButtonEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
