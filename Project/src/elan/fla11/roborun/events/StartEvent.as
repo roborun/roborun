@@ -5,9 +5,9 @@ package elan.fla11.roborun.events
 	public class StartEvent extends Event
 	{
 		public static const START_GAME	:String = 'startGame';
-		public var _groupName			:String;
-		public var _userDetails			:Object;
-		public var _levelId				:uint;
+		public var groupName			:String;
+		public var userDetails			:Object;
+		public var levelId				:uint;
 		
 		public function StartEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

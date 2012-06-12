@@ -1,5 +1,7 @@
 package elan.fla11.roborun.settings
 {
+	import flash.display.Stage;
+
 	public class GameSettings
 	{
 		public static const LEVEL_URL			:String = 'levels.xml';
@@ -15,7 +17,10 @@ package elan.fla11.roborun.settings
 		
 	 	public static const ROTATION_SPEED		:uint = 5;
 
-		
+		/**
+		 * instanse of the stage
+		 **/
+	 	public static var STAGE					:Stage;
 		
 		/**
 		 * direction of LevelObject
@@ -36,5 +41,19 @@ package elan.fla11.roborun.settings
 	
 		
 		// Camera view:  1000x500.  level: 2000x1000
+		
+		/**
+		 * Robot Bull id
+		 **/
+		public static const	BULL				:uint = 0;
+		/**
+		 * Robot Giraffe id
+		 **/
+		public static const	GIRAFFE				:uint = 1;
+		/**
+		 * Robot Wheelie id
+		 **/
+		public static const	WHEELIE				:uint = 2;
+		
 	}
 }

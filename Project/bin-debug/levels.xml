@@ -2,7 +2,7 @@
 	<levels>
 		<level>
 			<title>First Level</title>
-			<source>../assets/levels/level0.png</source>
+			<source>../assets/levels/level1.png</source>
 		</level>
 		<level>
 			<title>Sec Level</title>

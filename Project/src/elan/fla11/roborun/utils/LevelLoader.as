@@ -18,10 +18,11 @@ package elan.fla11.roborun.utils
 	import flash.display.Loader;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.geom.Point;
 	import flash.net.URLRequest;
 
-	public class LevelLoader
+	public class LevelLoader extends EventDispatcher
 	{
 		private var _levelLoader	:Loader;
 		private var _level			:Sprite;
@@ -46,10 +47,23 @@ package elan.fla11.roborun.utils
 		{
 			return _level;
 		}
+
+		public function get startPositions(): Vector.<Point>
+		{
+			return _startPositions;
+		}
+
+		public function get flagPositions(): Vector.<Point>
+		{
+			return _flagPositions;
+		}
 		
 		private function onComplete_createLevel( e:Event ): void
 		{
 			var levelDesign : BitmapData = Bitmap( _levelLoader.content ).bitmapData;
+			
+			_startPositions = new Vector.<Point>();
+			_flagPositions = new Vector.<Point>();
 			
 			trace( 'creating level' );
 			
@@ -149,6 +163,12 @@ package elan.fla11.roborun.utils
 
 						case ColorCode.START_PLATE:
 							levelObject = new StartPlate();
+							_startPositions.push( new Point( col * GameSettings.GRID_SIZE, row * GameSettings.GRID_SIZE ));
+							break;
+
+						case ColorCode.FLAG_PLATE:
+							levelObject = new StartPlate();
+							_flagPositions.push( new Point( col * GameSettings.GRID_SIZE, row * GameSettings.GRID_SIZE ));
 							break;
 						
 						default:
@@ -162,7 +182,7 @@ package elan.fla11.roborun.utils
 				}
 			}
 			
-			
+			dispatchEvent( new Event( Event.COMPLETE ) );
 		}
 	}
 }
