@@ -44,7 +44,7 @@ package
 		{
 			trace(' start new game ');
 			removeChild( _pageController );
-			_gameController.setCurrentLevel( LevelModel.levels[e.levelId] );
+			_gameController.setCurrentLevel( _levelMdb.levels[e.levelId] );
 			_gameController.startGame( e );
 			addChild( _gameController );
 		}

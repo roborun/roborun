@@ -32,23 +32,13 @@ package elan.fla11.roborun.view.pages
 			_closeBtn.buttonMode = true;
 			_closeBtn.x = this.width;
 			_closeBtn.addEventListener(MouseEvent.CLICK, handleCloseClicked);
-			addChild(_closeBtn);			
-			
-			close_btn.mouseChildren = false;
-			close_btn.buttonMode = true;
-			//_closeBtn.x = this.width;
-			close_btn.addEventListener(MouseEvent.CLICK, handleCloseClicked);
+			addChild(_closeBtn);
 	
 			_list = new List(new LevelModel);
 			_list.addEventListener(ButtonEvent.LVLCHOSEN, handleLevelChosen);
 			_list.x = 10;
 			_list.y = 20;
 			addChild(_list);
-			
-			_scroller = new Scroller(397);
-			_scroller.x = (this.width - (_scroller.width+35))/*-_offset*/;
-			_scroller.y = 32;
-			addChild(_scroller);
 		}
 		
 		private function handleLevelChosen(evt:ButtonEvent):void
