@@ -14,8 +14,11 @@ package elan.fla11.roborun.view.pages
 	
 	public class LevelPage extends LevelPageGfx
 	{
+<<<<<<< HEAD
 		public const _offset:Number = 32;
 		private var _closeBtn:CloseButtonGfx;
+=======
+>>>>>>> 1c74bd6956017159319f6aaeabc50312f2cc60d3
 		private var _chooseBtn:Button;
 		private var _list:List;
 		private var _idx:uint;
@@ -23,6 +26,7 @@ package elan.fla11.roborun.view.pages
 		public function LevelPage()
 		{
 			super();
+<<<<<<< HEAD
 			trace(this.width, this.height);
 			_closeBtn = new CloseButtonGfx();
 			_closeBtn.mouseChildren = false;
@@ -30,6 +34,15 @@ package elan.fla11.roborun.view.pages
 			_closeBtn.x = this.width;
 			_closeBtn.addEventListener(MouseEvent.CLICK, handleCloseClicked);
 			addChild(_closeBtn);
+=======
+			
+			
+			close_btn.mouseChildren = false;
+			close_btn.buttonMode = true;
+			//_closeBtn.x = this.width;
+			close_btn.addEventListener(MouseEvent.CLICK, handleCloseClicked);
+	
+>>>>>>> 1c74bd6956017159319f6aaeabc50312f2cc60d3
 			
 			_list = new List(new LevelModel);
 			_list.addEventListener(ButtonEvent.LVLCHOSEN, handleLevelChosen);
@@ -37,6 +50,13 @@ package elan.fla11.roborun.view.pages
 			_list.y = 20;
 			addChild(_list);
 			
+<<<<<<< HEAD
+=======
+			_scroller = new Scroller(397);
+			_scroller.x = (this.width - (_scroller.width+35))/*-_offset*/;
+			_scroller.y = 32;
+			addChild(_scroller);
+>>>>>>> 1c74bd6956017159319f6aaeabc50312f2cc60d3
 		}
 		
 		private function handleLevelChosen(evt:ButtonEvent):void

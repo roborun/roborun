@@ -150,6 +150,7 @@ package elan.fla11.roborun.utils
 						case ColorCode.START_PLATE:
 							levelObject = new StartPlate();
 							break;
+						
 						default:
 							levelObject = new LevelObject();
 							
