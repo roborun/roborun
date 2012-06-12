@@ -49,7 +49,7 @@ package elan.fla11.roborun.models
 			
 		}
 		
-		public function get levels(): Vector.<LevelData>
+		public static function get levels(): Vector.<LevelData>
 		{
 			return _levels;
 		}

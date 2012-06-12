@@ -2,9 +2,12 @@ package
 {
 	import elan.fla11.roborun.controllers.GameController;
 	import elan.fla11.roborun.controllers.PageController;
+	import elan.fla11.roborun.events.ButtonEvent;
+	import elan.fla11.roborun.events.LvlsCompleteEvent;
 	import elan.fla11.roborun.events.StartEvent;
 	import elan.fla11.roborun.models.LevelModel;
 	import elan.fla11.roborun.settings.GameSettings;
+	import elan.fla11.roborun.utils.LevelLoader;
 	import elan.fla11.roborun.view.levelobjects.LaserPlate;
 	import elan.fla11.roborun.view.levelobjects.LeftRotationPlate;
 	import elan.fla11.roborun.view.levelobjects.statics.HolePlate;
@@ -30,15 +33,23 @@ package
 		
 		private function init(): void
 		{
+			_levelMdb = new LevelModel();
+			_levelMdb.addEventListener(LvlsCompleteEvent.lvlsLoaded, onLevelsLoaded_startPages);
+		}
+		
+		private function onLevelsLoaded_startPages( e:LvlsCompleteEvent ): void
+		{
 			_gameController = new GameController();
 
 			_pageController = new PageController();
 			addChild( _pageController );
 			
-			_levelMdb = new LevelModel();
 			
 			addEventListener(StartEvent.START_GAME, onStartGame);
+			
 		}
+		
+		
 		
 		private function onStartGame( e:StartEvent ): void
 		{
