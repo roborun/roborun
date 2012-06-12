@@ -27,6 +27,7 @@ package elan.fla11.roborun.view.gui
 			addEventListener(MouseEvent.MOUSE_OUT, handleMouseOut)
 			Label.textColor = 0xFFFFFF;
 		}
+		
 		private function handleMouseOut(evt:MouseEvent):void
 		{
 			Label.textColor = _color;

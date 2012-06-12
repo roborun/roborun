@@ -13,6 +13,9 @@ package elan.fla11.roborun.view.gui
 		private var _buttonUp:UpArrowGfx;
 		private var _buttonDown:DownArrowGfx;
 		private var _scrollerSlide:ScrollerSlide;
+		private var _scrollCounter:uint;
+		private var _scrollingUp:Boolean;
+		private var _scrollingDown:Boolean;
 		
 		public function Scroller(scrollBarHeight:uint)
 		{
@@ -40,17 +43,43 @@ package elan.fla11.roborun.view.gui
 		
 		private function handleUpClicked(evt:MouseEvent):void
 		{
-			_scrollerSlide.scrollThumbUp = 10;
+			_scrollingUp = true;
+			addEventListener(Event.ENTER_FRAME, handleEnterFrame);
+			_buttonUp.addEventListener(MouseEvent.MOUSE_UP, handleMouseUp_buttonUp);
 		}
-		
+
 		private function handleDownClicked(evt:MouseEvent):void
 		{
-			_scrollerSlide.scrollThumbDown = 10;
+			_scrollingDown = true;
+			addEventListener(Event.ENTER_FRAME, handleEnterFrame);
+			_buttonDown.addEventListener(MouseEvent.MOUSE_UP, handleMouseUp_buttonDown);
+		}
+		
+		private function handleMouseUp_buttonDown(evt:MouseEvent):void
+		{
+			removeEventListener(Event.ENTER_FRAME, handleEnterFrame);
+			_scrollingDown = false;
+		}
+		
+		
+		private function handleMouseUp_buttonUp(evt:MouseEvent):void
+		{
+			_scrollingUp = false;
+			removeEventListener(Event.ENTER_FRAME, handleEnterFrame);
 		}
 		
 		public function get scrollPosition():Number
 		{
 			return _scrollerSlide.scrollPosition;
+		}
+		
+		private function handleEnterFrame(evt:Event):void
+		{
+			if(_scrollingUp)
+				_scrollerSlide.scrollThumbUp = 5;
+			if(_scrollingDown)
+				_scrollerSlide.scrollThumbDown = 5;
+				
 		}
 	}
 }
