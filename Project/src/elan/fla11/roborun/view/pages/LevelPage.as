@@ -16,7 +16,6 @@ package elan.fla11.roborun.view.pages
 	{
 		
 		public const _offset:Number = 32;
-		private var _closeBtn:CloseButtonGfx;
 		
 		private var _chooseBtn:Button;
 		private var _list:List;
@@ -26,17 +25,8 @@ package elan.fla11.roborun.view.pages
 		{
 			super();
 
-			trace(this.width, this.height);
-			_closeBtn = new CloseButtonGfx();
-			_closeBtn.mouseChildren = false;
-			_closeBtn.buttonMode = true;
-			_closeBtn.x = this.width;
-			_closeBtn.addEventListener(MouseEvent.CLICK, handleCloseClicked);
-			addChild(_closeBtn);			
-			
 			close_btn.mouseChildren = false;
 			close_btn.buttonMode = true;
-			//_closeBtn.x = this.width;
 			close_btn.addEventListener(MouseEvent.CLICK, handleCloseClicked);
 	
 			_list = new List(new LevelModel);
@@ -44,11 +34,7 @@ package elan.fla11.roborun.view.pages
 			_list.x = 10;
 			_list.y = 20;
 			addChild(_list);
-			
-			_scroller = new Scroller(397);
-			_scroller.x = (this.width - (_scroller.width+35))/*-_offset*/;
-			_scroller.y = 32;
-			addChild(_scroller);
+		
 		}
 		
 		private function handleLevelChosen(evt:ButtonEvent):void

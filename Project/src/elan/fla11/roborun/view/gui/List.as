@@ -22,15 +22,12 @@ package elan.fla11.roborun.view.gui
 		private var _scroller:Scroller;
 		private var _listMasker:Sprite;
 		private var _listContainer:Sprite;
-		private var _model:LevelModel;
 		private var _idx:uint;
 		private var _listPos:Number;
 		private var _symb:ChosenLvlGfx;
 		
 		public function List(model:LevelModel)
 		{
-			_model = model;
-			_model.addEventListener(LvlsCompleteEvent.lvlsLoaded, handleModelComplete);
 			init();
 		}
 		
@@ -44,27 +41,24 @@ package elan.fla11.roborun.view.gui
 			
 			_listContainer = new Sprite();
 			_listContainer.mask = _listMasker;
-			addChildAt(_listContainer, 0);
+			addChild(_listContainer);
 			
 			_symb = new ChosenLvlGfx();
 			_symb.visible = false;
 			_listContainer.addChild(_symb);
-		}
-		
-		/*bygger listan när ModelDatabase dispatchar att den är färdig*/
-		private function handleModelComplete(evt:LvlsCompleteEvent):void
-		{
+			
 			addListItems();
 		}
+		
 		
 		/*skapar ListItems och skickar in infon*/
 		private function addListItems():void
 		{
 			_listItems = new Vector.<Button>();
-			for (var i:int = 0; i < _model.levels.length; i++) 
+			for (var i:int = 0; i < LevelModel.levels.length; i++) 
 			{
 				_listItems.push(new Button(GameSettings.BUTTON_COLOR));
-				_listItems[i].Label.text = _model.levels[i].title;
+				_listItems[i].Label.text = LevelModel.levels[i].title;
 				_listItems[i].addEventListener(MouseEvent.CLICK, handleListItemClicked_showDetails);
 				_listItems[i].x = 5;
 				_listItems[i].y = i*(_listItems[i].height+10);
@@ -74,9 +68,9 @@ package elan.fla11.roborun.view.gui
 			/*lägger till scrollern ifall den behövs*/
 			if(_listContainer.height >= _listMasker.height)
 			{
-				_scroller = new Scroller(_maskerHeight -3);
+				_scroller = new Scroller(397);
 				_scroller.x = _maskerWidth + _scroller.width;
-				//_scroller.y = -2;
+				_scroller.y = 12;
 				addChild(_scroller);
 				_scroller.addEventListener(ScrollEvent.SCROLLING, handleScrollEvent);
 			}
