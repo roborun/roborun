@@ -23,6 +23,7 @@ package elan.fla11.roborun.view.pages
 		private var _lvlBtn:Button;
 		private var _shader:Sprite;
 		private var _lvlPage:LevelPage;
+		private var _lvlIdx:uint;
 		
 		public function NewGamePage()
 		{
@@ -56,10 +57,9 @@ package elan.fla11.roborun.view.pages
 			_lvlPage.x = (this.width/2 - _lvlPage.width/2)+_lvlPage._offset;
 			_lvlPage.y = (this.height/2 - _lvlPage.height/2)+_lvlPage._offset;
 			_lvlPage.addEventListener(ButtonEvent.CLOSE, handleCloseClicked);
+			_lvlPage.addEventListener(ButtonEvent.LVLCHOSEN, handleLevelChosen);
 			addChild(_lvlPage);
 			trace( SlideCollection.robotIndex );
-			
-			
 		}
 
 		private function handleChooseLvlClicked(evt:MouseEvent):void
@@ -67,6 +67,12 @@ package elan.fla11.roborun.view.pages
 			_shader.visible = true;
 			_lvlPage.visible = true;
 			TweenLite.to(_shader, .5, {alpha:.7});
+		}
+		
+		private function handleLevelChosen(evt:ButtonEvent):void
+		{
+			_lvlIdx = _lvlPage.targetIdx;
+			trace(_lvlIdx);
 		}
 		
 		private function handleCloseClicked(event:Event):void

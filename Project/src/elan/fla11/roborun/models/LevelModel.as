@@ -1,8 +1,10 @@
 package elan.fla11.roborun.models
 {
+	import elan.fla11.roborun.events.LvlsCompleteEvent;
 	import elan.fla11.roborun.settings.GameSettings;
 	
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 
@@ -14,7 +16,7 @@ package elan.fla11.roborun.models
 	 * @author Anton Strand.
 	 **/
 	
-	public class LevelModel
+	public class LevelModel extends EventDispatcher
 	{
 		private var _levelLoader		:URLLoader;
 		private static var _levels		:Vector.<LevelData>;
@@ -42,9 +44,12 @@ package elan.fla11.roborun.models
 			{
 				_levels.push( new LevelData( level.title, level.source ));
 			}
+			
+			dispatchEvent(new LvlsCompleteEvent(LvlsCompleteEvent.lvlsLoaded));
+			
 		}
 		
-		public static function get levels(): Vector.<LevelData>
+		public function get levels(): Vector.<LevelData>
 		{
 			return _levels;
 		}
