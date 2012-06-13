@@ -40,5 +40,13 @@ package elan.fla11.roborun
 		[Embed(source="../assets/pictures/GameParts/TurnTrack_right.png")]
 		public static const RIGHT_TRACK					:Class;
 
+		
+		// BACKGROUNDS
+		[Embed(source="../assets/pictures/game_bg.png")]
+		public static const GAME_BG			:Class;
+
+		[Embed(source="../assets/pictures/card_banner.png")]
+		public static const CARD_BANNER			:Class;
+
 	}
 }

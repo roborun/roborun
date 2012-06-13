@@ -1,15 +1,22 @@
 package elan.fla11.roborun.controllers
 {
+	import com.greensock.TweenLite;
+	import com.greensock.TweenMax;
+	
+	import elan.fla11.roborun.Embeder;
 	import elan.fla11.roborun.events.StartEvent;
 	import elan.fla11.roborun.models.LevelData;
 	import elan.fla11.roborun.settings.GameSettings;
 	import elan.fla11.roborun.utils.LevelCamera;
 	import elan.fla11.roborun.utils.LevelLoader;
+	import elan.fla11.roborun.utils.SpritePool;
+	import elan.fla11.roborun.view.GameCard;
 	import elan.fla11.roborun.view.robots.BullRobot;
 	import elan.fla11.roborun.view.robots.GiraffeRobot;
 	import elan.fla11.roborun.view.robots.RobotBase;
 	import elan.fla11.roborun.view.robots.WheelieRobot;
 	
+	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.Event;
 
@@ -22,6 +29,12 @@ package elan.fla11.roborun.controllers
 		private var _levelLoader	:LevelLoader;
 		private var _robot			:RobotBase;
 		
+		private var _cardPool		:SpritePool;
+		private var _numCard		:uint;
+		private var _cards			:Array;
+		
+		private var _cardBanner		:Bitmap;
+		
 		public function GameController()
 		{
 			init();
@@ -29,8 +42,16 @@ package elan.fla11.roborun.controllers
 		
 		private function init(): void
 		{
+			_cardPool = new SpritePool( GameCard, 9 );
+			_cards = [];
 			_levelLoader = new LevelLoader();
 			_camera = new LevelCamera();
+			
+			_cardBanner = new Embeder.CARD_BANNER();
+			
+			var bg :Bitmap = new Embeder.GAME_BG();
+			addChild( bg );
+			
 			_world = new Sprite();
 			addChild( _world );
 		}
@@ -52,11 +73,36 @@ package elan.fla11.roborun.controllers
 		
 		private function onComplete_startGame( e:Event ): void
 		{
+			_numCard = 9;
 			_robot.x = _levelLoader.startPositions[0].x;
 			_robot.y = _levelLoader.startPositions[0].y;			
 			_camera.setWorld( _world );
+			
+			addCards();
 		}
 		
+		
+		private function addCards(): void
+		{
+			_cardBanner.x = GameSettings.STAGE_W;
+			_cardBanner.y = 200;
+			addChild( _cardBanner );
+			TweenLite.to( _cardBanner, 1, {x: 0} );
+			
+			for (var i:int = 0; i < _numCard; ++i) 
+			{
+				_cards.push( _cardPool.getSprite() );
+				_cards[i].shuffle();
+				_cards[i].small();
+				_cards[i].x = i * 105 + 40;
+				_cards[i].y = 240;
+				_cards[i].alpha = 0;
+				addChild( _cards[i] );
+			}
+	
+			TweenMax.allTo( _cards, .2, {alpha: 1, delay:  1}, .3);
+			
+		}
 		
 		private function addRobot( robotID:uint ): RobotBase
 		{
