@@ -11,6 +11,7 @@ package elan.fla11.roborun.controllers
 	import elan.fla11.roborun.utils.LevelLoader;
 	import elan.fla11.roborun.utils.SpritePool;
 	import elan.fla11.roborun.view.GameCard;
+	import elan.fla11.roborun.view.pages.GameBackground;
 	import elan.fla11.roborun.view.robots.BullRobot;
 	import elan.fla11.roborun.view.robots.GiraffeRobot;
 	import elan.fla11.roborun.view.robots.RobotBase;
@@ -19,6 +20,7 @@ package elan.fla11.roborun.controllers
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 
 	public class GameController extends Sprite
 	{
@@ -34,6 +36,7 @@ package elan.fla11.roborun.controllers
 		private var _cards			:Array;
 		
 		private var _cardBanner		:Bitmap;
+		private var _gameMenuGfx	:GameBackground;
 		
 		public function GameController()
 		{
@@ -49,8 +52,8 @@ package elan.fla11.roborun.controllers
 			
 			_cardBanner = new Embeder.CARD_BANNER();
 			
-			var bg :Bitmap = new Embeder.GAME_BG();
-			addChild( bg );
+			_gameMenuGfx = new GameBackground();
+			addChild( _gameMenuGfx );
 			
 			_world = new Sprite();
 			addChild( _world );
@@ -78,16 +81,28 @@ package elan.fla11.roborun.controllers
 			_robot.y = _levelLoader.startPositions[0].y;			
 			_camera.setWorld( _world );
 			
-			addCards();
+			_world.addEventListener(MouseEvent.CLICK, onClick_add);
+			_gameMenuGfx.addEventListener(MouseEvent.CLICK, onClick_remove);
+			
+			//addCards();
+		}
+		
+		private function onClick_add( e:MouseEvent ): void
+		{
+			_gameMenuGfx.addWarning();
+		}
+		private function onClick_remove( e:MouseEvent ): void
+		{
+			_gameMenuGfx.removeWarning();
 		}
 		
 		
 		private function addCards(): void
 		{
 			_cardBanner.x = GameSettings.STAGE_W;
-			_cardBanner.y = 200;
+			_cardBanner.y = 515;
 			addChild( _cardBanner );
-			TweenLite.to( _cardBanner, 1, {x: 0} );
+			TweenLite.to( _cardBanner, 1, {x: 0, delay: 1} );
 			
 			for (var i:int = 0; i < _numCard; ++i) 
 			{
@@ -95,12 +110,12 @@ package elan.fla11.roborun.controllers
 				_cards[i].shuffle();
 				_cards[i].small();
 				_cards[i].x = i * 105 + 40;
-				_cards[i].y = 240;
+				_cards[i].y = 555;
 				_cards[i].alpha = 0;
 				addChild( _cards[i] );
 			}
 	
-			TweenMax.allTo( _cards, .2, {alpha: 1, delay:  1}, .3);
+			TweenMax.allTo( _cards, .2, {alpha: 1, delay:  2}, .3);
 			
 		}
 		
