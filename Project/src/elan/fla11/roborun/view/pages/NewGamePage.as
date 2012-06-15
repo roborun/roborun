@@ -92,14 +92,10 @@ package elan.fla11.roborun.view.pages
 				
 				trace( 'groupName', GroupNameInput.Tf.text );
 				trace( 'userName', UserNameInput.Tf.text );	
-				
-				var start_evt : StartEvent = new StartEvent( StartEvent.START_GAME, true );
-				start_evt.groupName = GroupNameInput.Tf.text;
-				start_evt.userDetails = {userName: UserNameInput.Tf.text, robot: SlideCollection.robotIndex, level: 0};
-				start_evt.levelId = 0;
 			
 				ConnectionManager.connect(GroupNameInput.Tf.text, {userName: UserNameInput.Tf.text, robot: SlideCollection.robotIndex, level: 0});
-				dispatchEvent( start_evt );
+				dispatchEvent( new Event( StartEvent.START_GAME, true ) );
+				
 			}
 			else
 				trace('Please insert a username and groupname');

@@ -72,8 +72,6 @@ package elan.fla11.roborun.utils
 				for (var row:uint = 0; row < levelDesign.height; row++) 
 				{
 					var levelObject : LevelObject;
-					
-					trace( levelDesign.getPixel( col, row ), 0x000000, levelDesign.getPixel( col, row ) ==  0x000000 );
 				
 					switch( levelDesign.getPixel( col, row ) )
 					{

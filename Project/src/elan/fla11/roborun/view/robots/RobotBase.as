@@ -6,6 +6,7 @@ package elan.fla11.roborun.view.robots
 	
 	public class RobotBase extends Sprite
 	{
+		protected var _userID		:String;
 		protected var _robotID		:uint;
 		protected var _gfx			:Sprite;
 		
@@ -14,11 +15,13 @@ package elan.fla11.roborun.view.robots
 			_gfx.x = GameSettings.GRID_SIZE *.5;
 			_gfx.y = GameSettings.GRID_SIZE *.5;
 			addChild( _gfx );
+			
+			trace( 'Init robot', _userID );
 		}
-		
-		public function get robotID(): uint
+
+		public function get userID(): String
 		{
-			return _robotID;
+			return _userID;
 		}
 	}
 }

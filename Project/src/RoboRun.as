@@ -16,6 +16,7 @@ package
 	import elan.fla11.roborun.view.levelobjects.tracks.StraightTrackPlate;
 	
 	import flash.display.Sprite;
+	import flash.events.Event;
 	
 	[SWF(width="1024", height="750", frameRate="30")]
 	public class RoboRun extends Sprite
@@ -39,22 +40,20 @@ package
 		
 		private function onLevelsLoaded_startPages( e:LvlsCompleteEvent ): void
 		{
-			_gameController = new GameController();
 
 			_pageController = new PageController();
 			addChild( _pageController );
 			
 			
-			addEventListener(StartEvent.START_GAME, onStartGame);
+			addEventListener(StartEvent.START_GAME, onActivate_StartGame);
 			
 		}
 		
-		private function onStartGame( e:StartEvent ): void
+		
+		private function onActivate_StartGame( e:Event ): void
 		{
-			trace(' start new game ');
+			_gameController = new GameController();
 			removeChild( _pageController );
-			_gameController.setCurrentLevel( LevelModel.levels[e.levelId] );
-			_gameController.startGame( e );
 			addChild( _gameController );
 		}
 		
