@@ -49,8 +49,7 @@ package
 			
 		}
 		
-		
-		private function onActivate_StartGame( e:Event ): void
+		private function onActivate_StartGame( e:StartEvent ): void
 		{
 			_gameController = new GameController();
 			removeChild( _pageController );
