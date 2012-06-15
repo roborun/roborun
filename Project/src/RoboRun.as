@@ -44,12 +44,11 @@ package
 			_pageController = new PageController();
 			addChild( _pageController );
 			
-			
 			addEventListener(StartEvent.START_GAME, onActivate_StartGame);
 			
 		}
 		
-		private function onActivate_StartGame( e:StartEvent ): void
+		private function onActivate_StartGame( e:Event ): void
 		{
 			_gameController = new GameController();
 			removeChild( _pageController );
