@@ -57,7 +57,7 @@ package elan.fla11.roborun.view
 			uTurnArrow.visible = false;
 
 			
-			_type = Math.random() * 6;
+			_type = Math.random() * 7;
 			_point = uint(Math.random() * 9) * 100;
 			
 			point_tf.text = String(_point);
