@@ -3,6 +3,7 @@ package elan.fla11.roborun.view.gui
 	import elan.fla11.roborun.ScrollBarGfx;
 	import elan.fla11.roborun.ScrollThumbGfx;
 	import elan.fla11.roborun.events.ScrollEvent;
+	import elan.fla11.roborun.settings.GameSettings;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -28,6 +29,14 @@ package elan.fla11.roborun.view.gui
 			
 			_scrollerThumb.addEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown_scroll);
 			addChild(_scrollerThumb);
+			
+			GameSettings.STAGE.addEventListener(MouseEvent.MOUSE_WHEEL, handleMouseWheel);
+		}
+		
+		private function handleMouseWheel(evt:MouseEvent):void
+		{
+			_scrollerThumb.y -= evt.delta;
+			checkPos();
 		}
 		
 		private function handleMouseDown_scroll(evt:MouseEvent):void
@@ -46,14 +55,16 @@ package elan.fla11.roborun.view.gui
 		private function handleMouseMove_scrolling(evt:MouseEvent):void
 		{
 			_scrollerThumb.y = mouseY + _offset;
+			checkPos();
+		}
+		
+		private function checkPos():void
+		{
 			if(_scrollerThumb.y <= 0)
-			{
 				_scrollerThumb.y = 0;
-			}
+			
 			if(_scrollerThumb.y >= _scrollerTrack.height - _scrollerThumb.height)
-			{
 				_scrollerThumb.y = _scrollerTrack.height - _scrollerThumb.height;
-			}
 			
 			_scrollPos = _scrollerThumb.y/(_scrollerTrack.height - _scrollerThumb.height);
 			dispatchEvent(_scrollEvent);
@@ -66,24 +77,14 @@ package elan.fla11.roborun.view.gui
 		
 		public function set scrollThumbUp(position:Number):void
 		{
-			_scrollerThumb.y -= position;
-			if(_scrollerThumb.y <= 0)
-			{
-				_scrollerThumb.y = 0;
-			}
-			_scrollPos = _scrollerThumb.y/(_scrollerTrack.height - _scrollerThumb.height);
-			dispatchEvent(_scrollEvent);
+			_scrollerThumb.y -= position;			
+			checkPos();
 		}
 		
 		public function set scrollThumbDown(position:Number):void
 		{
-			_scrollerThumb.y += position;
-			if(_scrollerThumb.y >= _scrollerTrack.height - _scrollerThumb.height)
-			{
-				_scrollerThumb.y = _scrollerTrack.height - _scrollerThumb.height;
-			}
-			_scrollPos = _scrollerThumb.y/(_scrollerTrack.height - _scrollerThumb.height);
-			dispatchEvent(_scrollEvent);
+			_scrollerThumb.y += position;			
+			checkPos();
 		}
 	}
 }

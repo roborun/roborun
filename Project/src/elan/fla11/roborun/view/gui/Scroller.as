@@ -81,5 +81,10 @@ package elan.fla11.roborun.view.gui
 				_scrollerSlide.scrollThumbDown = 5;
 				
 		}
+		
+		public function msgScroll():void
+		{
+			_scrollerSlide.scrollThumbDown = 5;
+		}
 	}
 }

@@ -4,6 +4,7 @@ package elan.fla11.roborun.controllers
 	import com.greensock.TweenMax;
 	
 	import elan.fla11.roborun.Embeder;
+	import elan.fla11.roborun.events.ButtonEvent;
 	import elan.fla11.roborun.events.ConnectionEvent;
 	import elan.fla11.roborun.events.GameEvent;
 	import elan.fla11.roborun.events.StartEvent;
@@ -15,7 +16,9 @@ package elan.fla11.roborun.controllers
 	import elan.fla11.roborun.utils.LevelLoader;
 	import elan.fla11.roborun.utils.SpritePool;
 	import elan.fla11.roborun.view.GameCard;
+	import elan.fla11.roborun.view.gui.Button;
 	import elan.fla11.roborun.view.pages.CardBanner;
+	import elan.fla11.roborun.view.pages.ChatPage;
 	import elan.fla11.roborun.view.pages.GameBackground;
 	import elan.fla11.roborun.view.robots.BullRobot;
 	import elan.fla11.roborun.view.robots.GiraffeRobot;
@@ -48,6 +51,9 @@ package elan.fla11.roborun.controllers
 		
 		private var _players			:Array;
 		
+		private var _chatPage			:ChatPage;
+		private var _chatBtn			:Button;
+		
 		public function GameController()
 		{
 			init();
@@ -69,8 +75,31 @@ package elan.fla11.roborun.controllers
 			
 			_world = new Sprite();
 			addChild( _world );
+
+			_chatBtn = new Button(GameSettings.BUTTON_COLOR);
+			_chatBtn.Label.text = 'Chat';
+			_chatBtn.x = 680;
+			_chatBtn.y = 707;
+			_chatBtn.addEventListener(MouseEvent.CLICK, handleChatBtnClicked);
+			addChild(_chatBtn);
+			
+			_chatPage = new ChatPage();
+			_chatPage.addEventListener(ButtonEvent.CLOSE, handleChatCloseBtnClicked);
+			
 			
 			ConnectionManager.dispatcher.addEventListener(ConnectionEvent.CONNECTED, onConnected_initNewGame);
+		}
+		
+		private function handleChatBtnClicked(evt:MouseEvent):void
+		{
+			addChild(_chatPage);
+			_chatPage.activateEnter();
+		}
+		
+		private function handleChatCloseBtnClicked(evt:ButtonEvent):void
+		{
+			removeChild(_chatPage);
+			_chatPage.deactivateEnter();
 		}
 		
 		
@@ -96,11 +125,13 @@ package elan.fla11.roborun.controllers
 		private function onUserAdded_addNewPlayer( e:ConnectionEvent ): void
 		{
 			var idx : uint = e.userCount -1;
+			_chatPage.players = e.userArray;
 			
 			if( idx < _levelLoader.startPositions.length )
 			{
 				_robots[idx] = addRobot( e.user.details.robot, e.user.id );
 				_world.addChild( _robots[idx] );
+
 
 				for (var i:int = 0; i < e.userArray.length; i++) 
 				{
@@ -110,6 +141,7 @@ package elan.fla11.roborun.controllers
 						
 						if( _robots[j].userID == e.userArray[i].id )
 						{
+
 							_robots[j].x = _levelLoader.startPositions[i].x;
 							_robots[j].y = _levelLoader.startPositions[i].y;
 							
@@ -142,6 +174,7 @@ package elan.fla11.roborun.controllers
 		
 		private function playRound( time:uint ): void
 		{
+
 			//_players.splice( 0, 0, {userID: _userID, cards: _cards}  );
 			trace( _players[0].points[0] );
 			var order : Array = [-1];

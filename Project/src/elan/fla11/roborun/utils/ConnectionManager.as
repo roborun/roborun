@@ -64,8 +64,9 @@ package elan.fla11.roborun.utils
 		/**
 		 * Send a message to specific player
 		 **/
-		public static function sendChatMessage( message : String, targetUser : UserObject ): void
+		public static function sendChatMessage( message : String, targetUser : UserObject = null ): void
 		{
+			trace('Sent message: ', message);
 			_connection.sendChatMessage( message, targetUser );
 		}
 		
@@ -76,6 +77,7 @@ package elan.fla11.roborun.utils
 			event.userArray = _connection.userArray;
 			trace( 'user array', _connection.userArray[0].id );
 			
+			trace( 'username:', user.name );
 			
 			_dispatcher.dispatchEvent( event );
 		}
@@ -104,10 +106,11 @@ package elan.fla11.roborun.utils
 			_dispatcher.dispatchEvent( event );
 		}
 
-		private static function onReceivingMessage( message:String ): void
+		private static function onReceivingMessage( message:MessageObject ): void
 		{
 			var event : ConnectionEvent = new ConnectionEvent( ConnectionEvent.MESSAGE_RECEIVED );
 			event.message = message;
+			trace('Received message: ', message);
 			
 			_dispatcher.dispatchEvent( event );
 		}
