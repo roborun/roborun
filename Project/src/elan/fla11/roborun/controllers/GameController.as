@@ -74,8 +74,6 @@ package elan.fla11.roborun.controllers
 			_level = _levelLoader.level;
 			_world.addChild( _level );
 			
-			trace( 'PeerID',e.user.id );
-			
 			_robots[0] = addRobot( e.user.details.robot, e.user.id );
 			_world.addChild( _robots[0] );
 			
@@ -89,24 +87,29 @@ package elan.fla11.roborun.controllers
 			
 			if( idx < _levelLoader.startPositions.length )
 			{
-				
 				_robots[idx] = addRobot( e.user.details.robot, e.user.id );
 				_world.addChild( _robots[idx] );
+				
+				trace( _robots.length );
 
-				for (var i:int = 0; i < 2 /*e.userArray.length*/; i++) 
+				for (var i:int = 0; i < e.userArray.length; i++) 
 				{
 					for (var j:int = 0; j < _robots.length; j++) 
 					{
-						trace( e.userArray[i].id, _robots[j].userID, e.userArray[i].id == _robots[j].userID ,i, j);
-						if( _robots[j].userID, e.userArray[i].id == _robots[j].userID )
+						trace( _robots[j].userID, e.userArray[i].id ,_robots[j].userID == e.userArray[i].id );
+						
+						if( _robots[j].userID == e.userArray[i].id )
 						{
 							_robots[j].x = _levelLoader.startPositions[i].x;
-							_robots[j].y = _levelLoader.startPositions[i].y;	
+							_robots[j].y = _levelLoader.startPositions[i].y;
 							
 						}
 					}
+					
 				}
-
+				
+				
+				
 				trace( 'new user');
 			}
 			

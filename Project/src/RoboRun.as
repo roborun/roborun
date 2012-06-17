@@ -48,6 +48,7 @@ package
 			
 		}
 		
+		
 		private function onActivate_StartGame( e:Event ): void
 		{
 			_gameController = new GameController();
