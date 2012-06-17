@@ -26,6 +26,7 @@ package elan.fla11.roborun.controllers
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.utils.setTimeout;
 
 	public class GameController extends Sprite
 	{
@@ -85,9 +86,10 @@ package elan.fla11.roborun.controllers
 			
 			_userID = e.user.id;
 			
-			
+			addEventListener(Event.ENTER_FRAME, onLoop);
 			ConnectionManager.dispatcher.addEventListener(ConnectionEvent.USER_ADDED, onUserAdded_addNewPlayer);
 			ConnectionManager.dispatcher.addEventListener(ConnectionEvent.DATA_RECEIVED, onDataReceived_playRound);
+			
 			
 		}
 		
@@ -104,9 +106,9 @@ package elan.fla11.roborun.controllers
 				{
 					for (var j:int = 0; j < _robots.length; j++) 
 					{
-						trace( _robots[j].userID, e.userArray[i].id ,_robots[j].userID == e.userArray[i].id );
+						trace( _robots[j].userID, e.userArray[i].id ,_robots[j].userID == e.userArray[i].id, i, j ,e.userArray[i].name , e.userArray[i].stamp );
 						
-						if( _robots[i].userID == e.userArray[j].id )
+						if( _robots[j].userID == e.userArray[i].id )
 						{
 							_robots[j].x = _levelLoader.startPositions[i].x;
 							_robots[j].y = _levelLoader.startPositions[i].y;
@@ -132,7 +134,7 @@ package elan.fla11.roborun.controllers
 			_players.push( e.gameData );
 			trace( 'GameData', e.gameData, _players.length, e.userCount );
 			
-			if( _players.length == e.userCount )
+			if( _players.length >= e.userCount -1 )
 			{
 				playRound( 0 );
 			}
@@ -140,10 +142,17 @@ package elan.fla11.roborun.controllers
 		
 		private function playRound( time:uint ): void
 		{
+			//_players.splice( 0, 0, {userID: _userID, cards: _cards}  );
+			trace( _players[0].points[0] );
 			var order : Array = [-1];
 			for (var i:int = 0; i < _players.length; i++) 
 			{
-				if( _players[i].cards[ time ] > order[i] ) order.splice( 0, 0, i );
+				if( _players[i].points[time] > order[i] )
+				{
+					order.splice( 0, 0, i );
+				}
+				
+				trace( _players[i].points[0] );
 			}
 			
 			trace(' order all:', order );
@@ -151,7 +160,47 @@ package elan.fla11.roborun.controllers
 			trace( 'order:', order.length, _players[ order[0] ] ); 
 			order.pop();
 			trace( 'order2:', order.length,  _players[ order[1] ] ); 
+			
+			switch( _players[ order[0] ].types[time] )
+			{
+				case GameSettings.BACK_UP:
+					trace(' back up' ); 
+					_robots[0].move( -1 );
+					break;
+				
+				case GameSettings.MOVE_ONE:
+					trace(' move 1' );
+					_robots[0].move( 1 );
+					
+					break;
+				
+				case GameSettings.MOVE_TWO:
+					_robots[0].move( 2 );
+					trace(' move 2' );
+					
+					break;
+				
+				case GameSettings.MOVE_THREE:
+					trace(' move 3' );
+					_robots[0].move( 3 );
+					
+					
+					break;
+				
+				case GameSettings.TURN_LEFT:
+					_robots[0].rotate( -1 );					
+					break;
+				
+				case GameSettings.TURN_RIGHT:
+					_robots[0].rotate( 1 );					
+					break;
+				
+				case GameSettings.U_TURN:
+					
+					break;
+			}
 		}
+		
 		
 		private function onComplete_startGame( e:Event ): void
 		{
@@ -198,20 +247,24 @@ package elan.fla11.roborun.controllers
 			_players = [];
 			_cards = SpritePool.getChoosenCards();
 			
+			var points : Array = []; 
+			var types : Array = []; 
+			
 			for (var i:int = 0; i < _cards.length; i++) 
 			{
 				_cards[i].x = 110 * i + 133;
 				_cards[i].y = 590;
 				_cards[i].alpha = 0;
 				addChild( _cards[i] );
+				
+				points.push( _cards[i].point );
+				types.push( _cards[i].type );
 			}
-			var gameData : Object = {userID: _userID, cards: _cards};
-			_players.push( gameData );
 			
 			TweenMax.allTo( _cards, .2, {alpha: 1}, .3);
-			
+			_players.push( {userID: _userID, points: points, types: types} );
 			trace( 'current number of players:',_players.length );
-			ConnectionManager.sendData( gameData );
+			ConnectionManager.sendData( {userID: _userID, points: points, types: types} );
 		}
 		
 		private function addRobot( robotID:uint, userID:String ): RobotBase
@@ -233,5 +286,17 @@ package elan.fla11.roborun.controllers
 			}
 			return robot;
 		}
+		
+		
+		private function onLoop( e:Event ): void
+		{
+			for (var i:int = 0; i < _robots.length; i++) 
+			{
+				_robots[i].update();
+			}
+			
+			_camera.update();
+		}
 	}
+	
 }

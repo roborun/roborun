@@ -1,6 +1,7 @@
 package elan.fla11.roborun.utils
 {
 	import com.reyco1.multiuser.MultiUserSession;
+	import com.reyco1.multiuser.data.MessageObject;
 	import com.reyco1.multiuser.data.UserObject;
 	
 	import elan.fla11.roborun.events.ConnectionEvent;
@@ -99,7 +100,7 @@ package elan.fla11.roborun.utils
 			event.gameData = gameData;
 			event.userCount = _connection.userCount;
 			event.userArray = _connection.userArray;
-			
+						
 			_dispatcher.dispatchEvent( event );
 		}
 

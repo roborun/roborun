@@ -58,7 +58,6 @@ package elan.fla11.roborun.view.pages
 			{
 				_cards.push( SpritePool.getCard() );
 				_cards[i].shuffle();
-				_cards[i].small();
 				_cards[i].x = i * 105 + 40;
 				_cards[i].y = 41;
 				_cards[i].alpha = 0;
