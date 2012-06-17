@@ -1,27 +1,42 @@
 package elan.fla11.roborun.utils
 {
+	import elan.fla11.roborun.view.GameCard;
+	
 	import flash.display.Sprite;
 
 	public class SpritePool
 	{
-		private var _pool		:Array;
-		private	var _counter	:int;
-		private	var _type		:Class;
+		private static var _pool		:Array;
+		private static var _choosenPool	:Array;
+		private	static var _counter		:int;
+		private	static var _type		:Class;
+
+		private	static var _isInit		:Boolean;
 		
-		public function SpritePool( type:Class, len:uint )
+		public function SpritePool()
 		{
-			_pool = [];
-			_counter = len;
-			_type = type;
-			
-			for (var i:int = 0; i < len; ++i) 
+		}
+		
+		private static function init(): void
+		{
+			if( !_isInit )
 			{
-				_pool.push( new type() );
+				_pool = [];
+				_choosenPool = [];
+				_counter = 9;
+				_type = GameCard;
+				
+				for (var i:int = 0; i < _counter; ++i) 
+				{
+					_pool.push( new _type() );
+				}			
+				_isInit = true;
 			}
 		}
 		
-		public function getSprite(): Sprite
+		public static function getCard(): Sprite
 		{
+			init();
 			if( _counter > 0 )
 				return _pool[ --_counter ];
 			else
@@ -32,9 +47,19 @@ package elan.fla11.roborun.utils
 			}	
 		}
 		
-		public function returnSprite( s:Sprite ): void
+		public static function returnCard( s:Sprite ): void
 		{
 			_pool[++_counter] = s;
+		}
+		
+		public static function choosenCard( s:Sprite ): void
+		{
+			_choosenPool.push( s );
+		}
+
+		public static function getChoosenCards(): Array
+		{
+			return _choosenPool;
 		}
 	}
 }

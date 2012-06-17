@@ -14,6 +14,8 @@ package elan.fla11.roborun.settings
 		public static const BORDER_THICKNESS_Y	:uint = 80; // 70
 	 	public static const BORDER_THICKNESS_X	:uint = 44; // 34
 
+	 	public static const CHOOSE_CARD_TIME	:uint = 10; // Ange sekunder
+		
 		
 	 	public static const ROTATION_SPEED		:uint = 5;
 

@@ -97,6 +97,8 @@ package elan.fla11.roborun.utils
 			var event : ConnectionEvent = new ConnectionEvent( ConnectionEvent.DATA_RECEIVED );
 			event.peerID = peerID;
 			event.gameData = gameData;
+			event.userCount = _connection.userCount;
+			event.userArray = _connection.userArray;
 			
 			_dispatcher.dispatchEvent( event );
 		}
