@@ -6,6 +6,7 @@ package elan.fla11.roborun.events
 	{
 		public static const POWER_DOWN		:String = 'powerDown';
 		public static const DEAD			:String = 'dead';
+		public static const TIMES_UP		:String = 'timesUp';
 		
 		public function GameEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

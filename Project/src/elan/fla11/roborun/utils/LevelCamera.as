@@ -72,8 +72,6 @@ package elan.fla11.roborun.utils
 		{
 			
 			_zoom += e.delta * 0.1;
-
-			trace( 'scroll', _zoom);
 			
 			zoomOnMap();
 		}
@@ -98,7 +96,6 @@ package elan.fla11.roborun.utils
 			{
 				if( _window.mouseY > 0 && _window.mouseY < _window.height )
 				{
-					trace( 'move left' );
 					_speedX = 5;
 				}
 			}
@@ -107,7 +104,6 @@ package elan.fla11.roborun.utils
 			{
 				if( _window.mouseY > 0 && _window.mouseY < _window.height )
 				{
-					trace( 'move right' );
 					_speedX = -5;
 				}
 			}
@@ -116,7 +112,6 @@ package elan.fla11.roborun.utils
 			{
 				if( _window.mouseX > 0 && _window.mouseY < _window.width )
 				{
-					trace( 'move up' );
 					_speedY = 5;
 				}
 			}
@@ -125,7 +120,6 @@ package elan.fla11.roborun.utils
 			{
 				if( _window.mouseX > 0 && _window.mouseY < _window.width )
 				{
-					trace( 'move down' );
 					_speedY = -5;
 				}
 			}

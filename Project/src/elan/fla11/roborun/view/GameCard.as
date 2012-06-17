@@ -15,8 +15,10 @@ package elan.fla11.roborun.view
 	
 	public class GameCard extends GameCardGfx
 	{
-		private var	_type	:uint;
-		private var	_point	:uint;
+		private var	_type		:uint;
+		private var	_point		:uint;
+		
+		public var isOccupied	:Boolean;
 		
 		public function GameCard()
 		{

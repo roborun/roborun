@@ -1,5 +1,6 @@
 package elan.fla11.roborun.events
 {
+	import com.reyco1.multiuser.data.MessageObject;
 	import com.reyco1.multiuser.data.UserObject;
 	
 	import flash.events.Event;
@@ -31,7 +32,7 @@ package elan.fla11.roborun.events
 		/**
 		 * The message
 		 **/
-		public var message				:String;
+		public var message				:MessageObject;
 		
 		
 		/**
