@@ -32,6 +32,7 @@ package elan.fla11.roborun.view.slideshow
 			_slides.push(new Slide_giraffe);
 			_slides.push(new Slide_wheelie);
 			addChild(_slides[0]);
+			_currentSlide = 0;
 			_robotName = new RobotNameGfx();
 			_robotName.x = this.width/2;
 			_robotName.y = this.height;
@@ -61,7 +62,7 @@ package elan.fla11.roborun.view.slideshow
 		public function prevSlide():void
 		{			
 			_prevSlide = _currentSlide;
-			
+	
 			if(_currentSlide == 0)
 				_currentSlide = _slides.length -1;
 			else

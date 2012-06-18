@@ -37,5 +37,13 @@ package elan.fla11.roborun.view.pages
 		{
 			dispatchEvent(new ButtonEvent(ButtonEvent.BACK));
 		}
+		
+		public function restartSlideShow():void
+		{
+			slideShow = new SlideShow();
+			slideShow.x = (GameSettings.STAGE_W - SlideShow.slideShow_width) - GameSettings.BORDER_THICKNESS_Y;
+			slideShow.y = GameSettings.BORDER_THICKNESS_Y;
+			addChild(slideShow);
+		}
 	}
 }

@@ -39,10 +39,11 @@ package elan.fla11.roborun.view.pages
 			
 			_lvlBtn = new Button(GameSettings.BUTTON_COLOR);
 			_lvlBtn.Label.text = 'Choose level';
-			_lvlBtn.x = slideShow.x + slideShow.width/2 - _lvlBtn.width/2;
-			_lvlBtn.y = slideShow.y + slideShow.height + _lvlBtn.height;
+			_lvlBtn.x = 569.75;
+			_lvlBtn.y = 502.65;
 			addChild(_lvlBtn);
 			_lvlBtn.addEventListener(MouseEvent.CLICK, handleChooseLvlClicked);
+			trace(_lvlBtn.x, _lvlBtn.y);
 			
 			_shader = new Sprite();
 			_shader.graphics.beginFill(0);

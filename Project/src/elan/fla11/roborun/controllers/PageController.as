@@ -43,7 +43,7 @@ package elan.fla11.roborun.controllers
 		}
 		
 		private function restart():void
-		{
+		{			
 			_newGamePage.visible = false;
 			addChild(_newGamePage);
 			
@@ -58,12 +58,14 @@ package elan.fla11.roborun.controllers
 		
 		private function startNewGame(evt:ButtonEvent):void
 		{
+			restartSlideShows();
 			_startPage.visible = false;
 			_newGamePage.visible = true;
 		}
 		
 		private function joinGame(evt:ButtonEvent):void
 		{
+			restartSlideShows();
 			_startPage.visible = false;
 			_joinGamePage.visible = true;
 		}
@@ -76,7 +78,16 @@ package elan.fla11.roborun.controllers
 		
 		private function handleButtonClicked_back(evt:ButtonEvent):void
 		{
+			removeChild(_newGamePage);
+			removeChild(_joinGamePage);
+			removeChild(_instructionsPage);
 			restart();
+		}
+		
+		private function restartSlideShows():void
+		{
+			_joinGamePage.restartSlideShow();
+			_newGamePage.restartSlideShow();
 		}
 	}
 }

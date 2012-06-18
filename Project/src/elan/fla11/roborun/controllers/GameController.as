@@ -129,11 +129,11 @@ package elan.fla11.roborun.controllers
 		
 		private function handleChatBtnClicked(evt:MouseEvent = null):void
 		{
+			if( _camera != null ) _camera.deactivate();
 			_chatBtn.gotoAndStop( 0 );
 			addChild(_chatPage);
 			_chatPage.activateEnter();
 			_isChatOpen = true;
-			if( _camera != null ) _camera.deactivate();
 		}
 		
 		private function handleChatCloseBtnClicked(evt:ButtonEvent = null):void

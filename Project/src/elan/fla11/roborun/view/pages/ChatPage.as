@@ -82,7 +82,7 @@ package elan.fla11.roborun.view.pages
 		
 		private function handleScroll(evt:ScrollEvent):void
 		{
-			_chatPos = -_scroller.scrollPosition*(_chat.chatWindow.height - _chatMask.height) +_chatMask.y;
+			_chatPos = -_scroller.scrollPosition*(_chat.chatWindow.height - _chatMask.height)+_chatMask.y;
 			TweenLite.from(_chat.chatWindow, .5, {y:_chat.chatWindow.y, ease:Quad.easeOut});
 			TweenLite.to(_chat.chatWindow, .5, {y:_chatPos, ease:Quad.easeOut});
 		}

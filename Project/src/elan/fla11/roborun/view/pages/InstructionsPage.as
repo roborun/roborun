@@ -15,7 +15,8 @@ package elan.fla11.roborun.view.pages
 			GroupNameInput.visible = false;
 			UserTf.visible = false;
 			GroupTf.visible = false;
-			removeChild(slideShow);
+			if(slideShow)
+				removeChild(slideShow);
 			
 			loader = new URLLoader();
 			loader.addEventListener(Event.COMPLETE, handleLoaderComplete);
