@@ -53,8 +53,10 @@ package elan.fla11.roborun.controllers
 		private var _gameMenuGfx		:GameBackground;
 		
 		private var _userID				:String;
-		private var _userOrder			:uint;
 		private var _userDetails		:Object;
+		private var _userOrder			:uint;
+
+		private var _coUserOrder		:uint;
 		
 		private var _players			:Array;
 		
@@ -62,6 +64,11 @@ package elan.fla11.roborun.controllers
 		private var _chatBtn			:ChatBtnGfx;
 		private var _infoBtn			:InfoBtnGfx;
 		private var _isChatOpen			:Boolean;
+		
+		private var _gameObject			:Object;
+		private var _order				:Array;
+		private var _roundCount			:uint;
+		private var _orderIdx			:uint;
 		
 		public function GameController()
 		{
@@ -72,7 +79,7 @@ package elan.fla11.roborun.controllers
 		{
 			_robots = new Vector.<RobotBase>();
 			
-			_players = [];
+			_players = [0,1];
 			_cards = [];
 			_levelLoader = new LevelLoader();
 			_camera = new LevelCamera();
@@ -166,6 +173,8 @@ package elan.fla11.roborun.controllers
 			var idx : uint = e.userCount -1;
 			_chatPage.players = e.userArray;
 			
+			_coUserOrder = e.user.details.playerOrder;
+			
 			// Joining player
 			if( e.user.details.level != undefined)
 			{
@@ -189,106 +198,107 @@ package elan.fla11.roborun.controllers
 		
 		private function onDataReceived_playRound( e:ConnectionEvent ): void
 		{
-			_players.push( e.gameData );
-			trace( 'GameData', e.gameData, _players.length, e.userCount );
+			_players[ _coUserOrder ] = e.gameData;
 			
-			if( _players.length >= e.userCount -1 )
-			{
-				playRound( 0 );
-			}
+			_roundCount = 0;
+			_orderIdx = 0;
+			playRound();	
 		}
 		
-		private function playRound( time:uint ): void
+		private function playRound(): void
 		{
-
-			//_players.splice( 0, 0, {userID: _userID, cards: _cards}  );
-			trace( _players[0].points[0] );
-			var order : Array = [-1];
-			for (var i:int = 0; i < _players.length; i++) 
+			
+			if( _players[ _userOrder ].points[ _roundCount ] >= _players[ _coUserOrder ].points[ _roundCount ] )
 			{
-				if( _players[i].points[time] > order[i] )
-				{
-					order.splice( 0, 0, i );
-				}
-				
-				trace( _players[i].points[0] );
+				_order = [ _userOrder, _coUserOrder ]; 
 			}
 			
+			else if( _players[ _userOrder ].points[ _roundCount ] < _players[ _coUserOrder ].points[ _roundCount ] )
+			{
+				_order = [ _coUserOrder, _userOrder ]; 
+			}
 
+			if( _roundCount < 5 ) movePlayer();
 			
-			trace(' order all:', order );
-			
-			trace( 'order:', order.length, _players[ order[0] ] ); 
-			order.pop();
-			trace( 'order2:', order.length,  _players[ order[1] ] ); 
-			
-			switch( _players[ order[0] ].types[time] )
+		}
+		
+		private function movePlayer(): void
+		{
+			switch( _players[ _order[_orderIdx] ].types[_roundCount] )
 			{
 				case GameSettings.BACK_UP:
 					trace(' back up' ); 
-					_robots[order[0]].move( -1 );
+					_robots[_order[_orderIdx]].move( -1 );
 					break;
 				
 				case GameSettings.MOVE_ONE:
 					trace(' move 1' );
-					_robots[order[0]].move( 1 );
+					_robots[_order[_orderIdx]].move( 1 );
 					
 					break;
 				
 				case GameSettings.MOVE_TWO:
-					_robots[order[0]].move( 2 );
+					_robots[_order[_orderIdx]].move( 2 );
 					trace(' move 2' );
 					
 					break;
 				
 				case GameSettings.MOVE_THREE:
 					trace(' move 3' );
-					_robots[order[0]].move( 3 );
-					
-					
+					_robots[_order[_orderIdx]].move( 3 );
 					break;
 				
 				case GameSettings.TURN_LEFT:
-					_robots[0].rotate( -1 );					
+					trace(' rotate left');
+					_robots[_order[_orderIdx]].rotate( -90 );					
 					break;
 				
 				case GameSettings.TURN_RIGHT:
-					_robots[0].rotate( 1 );					
+					trace(' rotate right');
+					_robots[_order[_orderIdx]].rotate( 90 );					
 					break;
 				
 				case GameSettings.U_TURN:
-					
+					trace(' u turn');
+					_robots[_order[_orderIdx]].rotate( 180 );					
 					break;
 			}
+			
+			_robots[_order[_orderIdx]].addEventListener(GameEvent.MOVED, onRobotMoved);
+		
+
 		}
 		
+		private function onRobotMoved( e:GameEvent ): void
+		{
+			
+			if( _orderIdx < 1 )
+			{
+				++_orderIdx;
+				movePlayer();
+			}
+			else
+			{
+				++_roundCount;
+				_orderIdx = 0;
+				playRound();
+			}
+		}
 		
 		private function onComplete_startGame( e:Event ): void
 		{
 			_numCard = 9;		
 			_camera.setWorld( _world );
-			
-			/*var orderIdx : uint = _robots.length - (1 + _userOrder);
-
-			_robots[ _userOrder ].x = _levelLoader.startPositions[ _userOrder ].x;
-			_robots[ _userOrder ].y = _levelLoader.startPositions[ _userOrder ].y;
-			
-			_robots[ orderIdx ].x = _levelLoader.startPositions[ orderIdx ].x;
-			_robots[ orderIdx ].y = _levelLoader.startPositions[ orderIdx ].y;
-*/			
+					
 			for (var i:int = 0; i < _robots.length; i++) 
 			{
 				_robots[ i ].x = _levelLoader.startPositions[ i ].x;
 				_robots[ i ].y = _levelLoader.startPositions[ i ].y;
+				_robots[ i ].setStartPos();
 				_world.addChild( _robots[ i ] );
 				
 			}
-			
-			
-			/*_world.addChild( _robots[ orderIdx ] );
-			_world.addChild( _robots[ _userOrder ] );*/
-			
-			
+
 			_world.addEventListener(MouseEvent.CLICK, onClick_add);
 			_gameMenuGfx.addEventListener(MouseEvent.CLICK, onClick_remove);
 			
@@ -325,7 +335,6 @@ package elan.fla11.roborun.controllers
 		
 		private function addChoosenCards(): void
 		{
-			_players = [];
 			_cards = SpritePool.getChoosenCards();
 			
 			var points : Array = []; 
@@ -341,11 +350,18 @@ package elan.fla11.roborun.controllers
 				points.push( _cards[i].point );
 				types.push( _cards[i].type );
 			}
-			
-			TweenMax.allTo( _cards, .2, {alpha: 1}, .3);
-			_players.push( {userID: _userID, points: points, types: types} );
+			_gameObject = {userID: _userID, points: points, types: types};
+			_players[ _userOrder ] = _gameObject;
 			trace( 'current number of players:',_players.length );
-			ConnectionManager.sendData( {userID: _userID, points: points, types: types} );
+						
+			
+			TweenMax.allTo( _cards, .2, {alpha: 1}, .3, onComplete_sendGameObject);
+			
+		}
+		
+		private function onComplete_sendGameObject(): void
+		{
+			ConnectionManager.sendData( _gameObject );
 		}
 		
 		private function addRobot( robotID:uint, userID:String ): RobotBase

@@ -1,5 +1,8 @@
 package elan.fla11.roborun.view.robots
 {
+	import com.greensock.TweenLite;
+	
+	import elan.fla11.roborun.events.GameEvent;
 	import elan.fla11.roborun.settings.GameSettings;
 	
 	import flash.display.Sprite;
@@ -17,11 +20,15 @@ package elan.fla11.roborun.view.robots
 
 		protected var _prevPos		:Point;
 		protected var _prevRot		:uint;
+		
+		private var _game_evt		:GameEvent;
 
 		public function RobotBase()
 		{
 			_prevPos = new Point();
 			_prevRot = GameSettings.RIGHT;
+
+			_game_evt = new GameEvent( GameEvent.MOVED );
 			
 			_gfx.x = GameSettings.GRID_SIZE *.5;
 			_gfx.y = GameSettings.GRID_SIZE *.5;
@@ -30,6 +37,12 @@ package elan.fla11.roborun.view.robots
 			trace( 'Init robot', _userID );
 		}
 
+		public function setStartPos(): void
+		{
+			_prevPos.x = x;
+			_prevPos.y = y;			
+		}
+		
 		public function get userID(): String
 		{
 			return _userID;
@@ -44,64 +57,60 @@ package elan.fla11.roborun.view.robots
 		
 		public function rotate( rot:int = 0 ): void
 		{
-			_rot = rot;
+			TweenLite.to( _gfx, 1, {rotation: _gfx.rotation + rot, onComplete: dispatchMovedFinished});
 		}
 		
 		public function update(): void
-		{
-			
+		{	
 			if( _gfx.rotation == GameSettings.UP )
 			{
-				if( y > _prevPos.y - _delta ) y--;
-				else _delta = 0;
-				
-				if( _rot != 0 && _prevRot == GameSettings.UP )  _gfx.rotation += _rot;
-				else 
+				if( y > _prevPos.y - _delta ) --y;
+				else if( y < _prevPos.y - _delta) ++y;
+				else
 				{
-					_rot = 0;
-					_prevRot = GameSettings.UP;
+					_delta = 0;
+					_prevPos.y = y;
+					dispatchMovedFinished();
 				}
 			}
 			else if(  _gfx.rotation == GameSettings.DOWN )
 			{
-				if( y < _prevPos.y + _delta ) y++;
-				else _delta = 0;
-
-				if( _rot != 0 && _prevRot == GameSettings.DOWN )  _gfx.rotation += _rot;
-				else 
+				if( y < _prevPos.y + _delta ) ++y;
+				else if( y > _prevPos.y + _delta ) --y;
+				else
 				{
-					_rot = 0;
-					_prevRot = GameSettings.DOWN;
+					_delta = 0;
+					_prevPos.y = y;
+					dispatchMovedFinished();
 				}
 			}
 			else if(  _gfx.rotation == GameSettings.RIGHT )
 			{
-				if( x < _prevPos.x + _delta ) x++;
-				else _delta = 0;		
-				
-				if( _rot != 0 && _prevRot == GameSettings.RIGHT )
+				if( x < _prevPos.x + _delta ) ++x;
+				else if( x > _prevPos.x + _delta ) --x;
+				else
 				{
-					trace( 'rotate');
-					_gfx.rotation += _rot;
-				}
-				else 
-				{
-					_rot = 0;
-					_prevRot = GameSettings.RIGHT;
+					_delta = 0;
+					_prevPos.x = x;
+					dispatchMovedFinished();
 				}
 			}
 			else if(  _gfx.rotation == GameSettings.LEFT )
 			{
-				if( x > _prevPos.x - _delta ) x--;
-				else _delta = 0;				
-
-				if( _rot != 0 && _prevRot == GameSettings.LEFT )  _gfx.rotation += _rot;
-				else 
+				if( x > _prevPos.x - _delta ) --x;
+				else if( x < _prevPos.x - _delta ) ++x;
+				else
 				{
-					_rot = 0;
-					_prevRot = GameSettings.LEFT;
+					_delta = 0;
+					_prevPos.x = x;
+					dispatchMovedFinished();
 				}
 			}
+		}
+		
+		private function dispatchMovedFinished(): void
+		{
+			dispatchEvent( new GameEvent(GameEvent.MOVED) );
 		}
 	}
 }
