@@ -136,11 +136,11 @@ package elan.fla11.roborun.controllers
 		
 		private function handleChatBtnClicked(evt:MouseEvent = null):void
 		{
+			if( _camera != null ) _camera.deactivate();
 			_chatBtn.gotoAndStop( 0 );
 			addChild(_chatPage);
 			_chatPage.activateEnter();
 			_isChatOpen = true;
-			if( _camera != null ) _camera.deactivate();
 		}
 		
 		private function handleChatCloseBtnClicked(evt:ButtonEvent = null):void
@@ -295,8 +295,7 @@ package elan.fla11.roborun.controllers
 				_robots[ i ].x = _levelLoader.startPositions[ i ].x;
 				_robots[ i ].y = _levelLoader.startPositions[ i ].y;
 				_robots[ i ].setStartPos();
-				_world.addChild( _robots[ i ] );
-				
+				_world.addChild( _robots[ i ] );		
 			}
 
 			_world.addEventListener(MouseEvent.CLICK, onClick_add);

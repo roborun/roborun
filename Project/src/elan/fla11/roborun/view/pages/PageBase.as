@@ -26,16 +26,19 @@ package elan.fla11.roborun.view.pages
 			_backBtn.Label.text = 'Back';
 			addChild(_backBtn);
 			_backBtn.addEventListener(MouseEvent.CLICK, handleButtonClicked_back);
-			
-			slideShow = new SlideShow();
-			slideShow.x = (GameSettings.STAGE_W - SlideShow.slideShow_width) - GameSettings.BORDER_THICKNESS_Y;
-			slideShow.y = GameSettings.BORDER_THICKNESS_Y;
-			addChild(slideShow);
 		}
 		
 		private function handleButtonClicked_back(evt:MouseEvent):void
 		{
 			dispatchEvent(new ButtonEvent(ButtonEvent.BACK));
+		}
+		
+		public function restartSlideShow():void
+		{
+			slideShow = new SlideShow();
+			slideShow.x = (GameSettings.STAGE_W - SlideShow.slideShow_width) - GameSettings.BORDER_THICKNESS_Y;
+			slideShow.y = GameSettings.BORDER_THICKNESS_Y;
+			addChild(slideShow);
 		}
 	}
 }
