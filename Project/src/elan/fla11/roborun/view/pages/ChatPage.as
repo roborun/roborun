@@ -14,6 +14,7 @@ package elan.fla11.roborun.view.pages
 	import elan.fla11.roborun.view.gui.Scroller;
 	
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.text.TextFieldAutoSize;
@@ -114,6 +115,7 @@ package elan.fla11.roborun.view.pages
 					_scroller.activateScroll();
 				}
 			}
+			dispatchEvent( new Event(Event.CHANGE) );
 		}
 		
 		private function handleCloseClicked(evt:MouseEvent):void

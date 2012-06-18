@@ -1,5 +1,7 @@
 package elan.fla11.roborun.utils
 {
+	import elan.fla11.roborun.settings.GameSettings;
+	
 	import flash.display.Stage;
 	import flash.events.KeyboardEvent;
 	
@@ -13,17 +15,26 @@ package elan.fla11.roborun.utils
 	
 	public class KeyboardManager
 	{
-		private var key		:Object;
+		private static var key		:Object;
+		private static var isInit	:Boolean;
 		
-		// Måste skicka in stage för att man ska kunna lyssna på stagen
-		public function KeyboardManager(stage:Stage)
+		public function KeyboardManager()
 		{
-			key = {};
-			stage.addEventListener(KeyboardEvent.KEY_DOWN, keyHandler);
-			stage.addEventListener(KeyboardEvent.KEY_UP, keyHandler);
 		}
 		
-		private function keyHandler(e:KeyboardEvent): void
+		private static function init(): void
+		{
+			if( !isInit )
+			{
+				var stage : Stage = GameSettings.STAGE;
+				key = {};
+				stage.addEventListener(KeyboardEvent.KEY_DOWN, keyHandler);
+				stage.addEventListener(KeyboardEvent.KEY_UP, keyHandler);			
+				isInit = true;
+			}
+		}
+		
+		private static function keyHandler(e:KeyboardEvent): void
 		{
 			// Beroende om man trycker ner eller upp ska den tryckta knappen bli true eller false
 			// Den skapar en plats i objektet efter vilken keyCode det är
@@ -31,8 +42,9 @@ package elan.fla11.roborun.utils
 			if(e.type == KeyboardEvent.KEY_UP) key[e.keyCode] = false;		
 		}
 		
-		public function isKeyDown(keyCode:int): Boolean
+		public static function isKeyDown(keyCode:int): Boolean
 		{
+			init();
 			return key[keyCode];
 		}
 	}

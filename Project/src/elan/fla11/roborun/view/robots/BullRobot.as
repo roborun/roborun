@@ -17,5 +17,7 @@ package elan.fla11.roborun.view.robots
 			_gfx = new BullGfx();
 			_robotID = GameSettings.BULL;
 		}
+		
+		
 	}
 }

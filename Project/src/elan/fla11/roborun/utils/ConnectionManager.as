@@ -102,7 +102,7 @@ package elan.fla11.roborun.utils
 			event.gameData = gameData;
 			event.userCount = _connection.userCount;
 			event.userArray = _connection.userArray;
-			
+						
 			_dispatcher.dispatchEvent( event );
 		}
 

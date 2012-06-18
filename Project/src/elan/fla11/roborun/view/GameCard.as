@@ -1,6 +1,7 @@
 package elan.fla11.roborun.view
 {
 	import elan.fla11.roborun.GameCardGfx;
+	import elan.fla11.roborun.settings.GameSettings;
 	
 	/**
 	 * leftArrow
@@ -22,7 +23,7 @@ package elan.fla11.roborun.view
 		
 		public function GameCard()
 		{
-			super();
+			scaleX = scaleY = .8;
 		}
 		
 		public function get type(): uint
@@ -32,23 +33,9 @@ package elan.fla11.roborun.view
 
 		public function get point(): uint
 		{
+			trace( 'get points:',_point );
 			return _point;
 		}
-		
-		public function small(): void
-		{
-			scaleX = scaleY = .8;
-			buttonMode = true;
-			useHandCursor = true;
-		}
-
-		public function original(): void
-		{
-			scaleX = scaleY = 1;
-			buttonMode = false;
-			useHandCursor = false;
-		}
-		
 		
 		public function shuffle(): void
 		{
@@ -57,47 +44,48 @@ package elan.fla11.roborun.view
 			forwardArrow.visible = false;
 			backwardArrow.visible = false;
 			uTurnArrow.visible = false;
-
 			
 			_type = Math.random() * 7;
 			_point = uint(Math.random() * 9) * 100;
 			
 			point_tf.text = String(_point);
+
+			trace( 'points:',_point );
 			
 			
 			switch( _type )
 			{
-				case 0:
+				case GameSettings.BACK_UP:
 					title_tf.text = 'BACK UP';
 					backwardArrow.visible = true;
 					break;
 
-				case 1:
+				case GameSettings.MOVE_ONE:
 					title_tf.text = 'MOVE 1';
 					forwardArrow.visible = true;
 					break;
 
-				case 2:
+				case GameSettings.MOVE_TWO:
 					title_tf.text = 'MOVE 2';
 					forwardArrow.visible = true;
 					break;
 
-				case 3:
+				case GameSettings.MOVE_THREE:
 					title_tf.text = 'MOVE 3';
 					forwardArrow.visible = true;
 					break;
 
-				case 4:
+				case GameSettings.TURN_LEFT:
 					title_tf.text = 'TURN LEFT';
 					leftArrow.visible = true;
 					break;
 
-				case 5:
+				case GameSettings.TURN_RIGHT:
 					title_tf.text = 'TURN RIGHT';
 					rightArrow.visible = true;
 					break;
 
-				case 6:
+				case GameSettings.U_TURN:
 					title_tf.text = 'U-TURN';
 					uTurnArrow.visible = true;
 					break;

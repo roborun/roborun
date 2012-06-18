@@ -57,5 +57,38 @@ package elan.fla11.roborun.settings
 		 **/
 		public static const	WHEELIE				:uint = 2;
 		
+		
+		
+		/**
+		 * Card type back up
+		 **/
+		public static const	BACK_UP				:uint = 0;
+		/**
+		 * Card type move 1
+		 **/
+		public static const	MOVE_ONE			:uint = 1;
+		/**
+		 * Card type move 2
+		 **/
+		public static const	MOVE_TWO			:uint = 2;
+		/**
+		 * Card type move 3
+		 **/
+		public static const	MOVE_THREE			:uint = 3;
+		/**
+		 * Card type rotate left
+		 **/
+		public static const	TURN_LEFT			:uint = 4;
+		/**
+		 * Card type rotate right
+		 **/
+		public static const	TURN_RIGHT			:uint = 5;
+		/**
+		 * Card type u-turn
+		 **/
+		public static const	U_TURN				:uint = 6;
+		
+		
+		
 	}
 }
