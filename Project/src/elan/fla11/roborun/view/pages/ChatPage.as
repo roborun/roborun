@@ -14,6 +14,7 @@ package elan.fla11.roborun.view.pages
 	import elan.fla11.roborun.view.gui.Scroller;
 	
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.text.TextFieldAutoSize;
@@ -75,6 +76,9 @@ package elan.fla11.roborun.view.pages
 			_chat.addChild(_scroller);
 			_scroller.x = _chatMask.x + _chatMask.width;
 			_scroller.y = _chatMask.y;
+			
+			// MouseWheel ska bara aktiveras efter scrollen har startat.
+			
 		}
 		
 		private function handleScroll(evt:ScrollEvent):void
@@ -104,6 +108,7 @@ package elan.fla11.roborun.view.pages
 				if(_chat.chatWindow.height > _chatMask.height)
 					_scroller.msgScroll();
 			}
+			dispatchEvent( new Event(Event.CHANGE) );
 		}
 		
 		private function handleCloseClicked(evt:MouseEvent):void

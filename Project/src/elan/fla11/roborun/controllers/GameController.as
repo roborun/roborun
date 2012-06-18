@@ -3,7 +3,9 @@ package elan.fla11.roborun.controllers
 	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
 	
+	import elan.fla11.roborun.ChatBtnGfx;
 	import elan.fla11.roborun.Embeder;
+	import elan.fla11.roborun.InfoBtnGfx;
 	import elan.fla11.roborun.events.ButtonEvent;
 	import elan.fla11.roborun.events.ConnectionEvent;
 	import elan.fla11.roborun.events.GameEvent;
@@ -52,7 +54,8 @@ package elan.fla11.roborun.controllers
 		private var _players			:Array;
 		
 		private var _chatPage			:ChatPage;
-		private var _chatBtn			:Button;
+		private var _chatBtn			:ChatBtnGfx;
+		private var _infoBtn			:InfoBtnGfx;
 		
 		public function GameController()
 		{
@@ -76,30 +79,45 @@ package elan.fla11.roborun.controllers
 			_world = new Sprite();
 			addChild( _world );
 
-			_chatBtn = new Button(GameSettings.BUTTON_COLOR);
-			_chatBtn.Label.text = 'Chat';
-			_chatBtn.x = 680;
-			_chatBtn.y = 707;
+			_infoBtn = new InfoBtnGfx;
+			_infoBtn.x = 768;
+			_infoBtn.y = 615;
+			addChild(_infoBtn);
+
+			_chatBtn = new ChatBtnGfx;
+			_chatBtn.x = 879;
+			_chatBtn.y = 615;
+			_chatBtn.gotoAndStop( 0 );
 			_chatBtn.addEventListener(MouseEvent.CLICK, handleChatBtnClicked);
 			addChild(_chatBtn);
 			
 			_chatPage = new ChatPage();
+			_chatPage.addEventListener(Event.CHANGE, onChatChange_playChatBtn);
 			_chatPage.addEventListener(ButtonEvent.CLOSE, handleChatCloseBtnClicked);
 			
 			
 			ConnectionManager.dispatcher.addEventListener(ConnectionEvent.CONNECTED, onConnected_initNewGame);
 		}
 		
+		private function onChatChange_playChatBtn( e:Event ): void
+		{
+			_chatBtn.play();
+		}
+		
 		private function handleChatBtnClicked(evt:MouseEvent):void
 		{
+			_chatBtn.gotoAndStop( 0 );
 			addChild(_chatPage);
 			_chatPage.activateEnter();
+			_camera.deactivate();
 		}
 		
 		private function handleChatCloseBtnClicked(evt:ButtonEvent):void
 		{
+			_chatBtn.gotoAndStop( 0 );
 			removeChild(_chatPage);
 			_chatPage.deactivateEnter();
+			_camera.activate();
 		}
 		
 		

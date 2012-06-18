@@ -60,10 +60,22 @@ package elan.fla11.roborun.utils
 			_world.x = 12;
 			_world.y = 12;
 			
-			_allowUpdate = true;
-			GameSettings.STAGE.removeEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel_scroll);
-			GameSettings.STAGE.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel_scroll);
+			deactivate();
+			activate();
 		}
+		
+		public function activate(): void
+		{
+			_allowUpdate = true;
+			GameSettings.STAGE.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel_scroll);			
+		}
+
+		public function deactivate(): void
+		{
+			_allowUpdate = false;
+			GameSettings.STAGE.removeEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel_scroll);			
+		}
+		
 		
 		
 		private function onMouseWheel_scroll( e:MouseEvent ): void
