@@ -34,6 +34,14 @@ package elan.fla11.roborun.view.pages
 				ConnectionManager.connect(GroupNameInput.text, {});
 			else
 				trace('Please insert a username and groupname');*/
+			
+			if(GroupNameInput.Tf.length > 2)
+			{
+				trace( 'okej' );				
+				ConnectionManager.connect(GroupNameInput.text, {userName: UserTf.text});
+			}
+			else
+				trace('Please insert a username and groupname');
 		}
 	}
 }
