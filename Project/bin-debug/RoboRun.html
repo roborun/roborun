@@ -37,7 +37,7 @@
         <script type="text/javascript" src="swfobject.js"></script>
         <script type="text/javascript">
             // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection. 
-            var swfVersionStr = "11.1.0";
+            var swfVersionStr = "10.2.0";
             // To use express install, set to playerProductInstall.swf, otherwise the empty string. 
             var xiSwfUrlStr = "playerProductInstall.swf";
             var flashvars = {};
@@ -52,7 +52,7 @@
             attributes.align = "middle";
             swfobject.embedSWF(
                 "RoboRun.swf", "flashContent", 
-                "1000", "750", 
+                "1024", "750", 
                 swfVersionStr, xiSwfUrlStr, 
                 flashvars, params, attributes);
             // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
@@ -67,7 +67,7 @@
         <div id="flashContent">
             <p>
                 To view this page ensure that Adobe Flash Player version 
-                11.1.0 or greater is installed. 
+                10.2.0 or greater is installed. 
             </p>
             <script type="text/javascript"> 
                 var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
@@ -77,14 +77,14 @@
         </div>
         
         <noscript>
-            <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="1000" height="750" id="RoboRun">
+            <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="1024" height="750" id="RoboRun">
                 <param name="movie" value="RoboRun.swf" />
                 <param name="quality" value="high" />
                 <param name="bgcolor" value="#ffffff" />
                 <param name="allowScriptAccess" value="sameDomain" />
                 <param name="allowFullScreen" value="true" />
                 <!--[if !IE]>-->
-                <object type="application/x-shockwave-flash" data="RoboRun.swf" width="1000" height="750">
+                <object type="application/x-shockwave-flash" data="RoboRun.swf" width="1024" height="750">
                     <param name="quality" value="high" />
                     <param name="bgcolor" value="#ffffff" />
                     <param name="allowScriptAccess" value="sameDomain" />
@@ -93,7 +93,7 @@
                 <!--[if gte IE 6]>-->
                     <p> 
                         Either scripts and active content are not permitted to run or Adobe Flash Player version
-                        11.1.0 or greater is not installed.
+                        10.2.0 or greater is not installed.
                     </p>
                 <!--<![endif]-->
                     <a href="http://www.adobe.com/go/getflashplayer">
