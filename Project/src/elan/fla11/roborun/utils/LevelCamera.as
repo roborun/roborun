@@ -18,8 +18,8 @@ package elan.fla11.roborun.utils
 		private var _speedX				:int;
 		private var _speedY				:int;
 		
-		private var _keyboardManager	:KeyboardManager;
 		private var _allowUpdate		:Boolean;
+		private var _isInit				:Boolean;
 		
 		
 		public function LevelCamera()
@@ -35,8 +35,7 @@ package elan.fla11.roborun.utils
 			
 			_window.x = 12;
 			_window.y = 20;
-			
-			_keyboardManager = new KeyboardManager( GameSettings.STAGE );
+
 			
 			//addChild( _window );
 		}
@@ -60,13 +59,15 @@ package elan.fla11.roborun.utils
 			_world.x = 12;
 			_world.y = 12;
 			
+			_isInit = true;
+			
 			deactivate();
 			activate();
 		}
 		
 		public function activate(): void
 		{
-			_allowUpdate = true;
+			if( _isInit ) _allowUpdate = true;
 			GameSettings.STAGE.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel_scroll);			
 		}
 
@@ -144,12 +145,12 @@ package elan.fla11.roborun.utils
 					}
 				}
 	
-				if( _keyboardManager.isKeyDown( Keyboard.UP ) ) _speedY = 5;
-				if( _keyboardManager.isKeyDown( Keyboard.DOWN ) ) _speedY = -5;
-				if( _keyboardManager.isKeyDown( Keyboard.LEFT ) ) _speedX = 5;
-				if( _keyboardManager.isKeyDown( Keyboard.RIGHT ) ) _speedX = -5;
-				if( _keyboardManager.isKeyDown( Keyboard.Z ) ) _zoom -= 0.1;
-				if( _keyboardManager.isKeyDown( Keyboard.X ) ) _zoom += 0.1;
+				if( KeyboardManager.isKeyDown( Keyboard.UP ) ) _speedY = 5;
+				if( KeyboardManager.isKeyDown( Keyboard.DOWN ) ) _speedY = -5;
+				if( KeyboardManager.isKeyDown( Keyboard.LEFT ) ) _speedX = 5;
+				if( KeyboardManager.isKeyDown( Keyboard.RIGHT ) ) _speedX = -5;
+				if( KeyboardManager.isKeyDown( Keyboard.Z ) ) _zoom -= 0.1;
+				if( KeyboardManager.isKeyDown( Keyboard.X ) ) _zoom += 0.1;
 				
 				zoomOnMap();
 				_world.x += _speedX;

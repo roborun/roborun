@@ -14,6 +14,7 @@ package elan.fla11.roborun.controllers
 	import elan.fla11.roborun.models.LevelModel;
 	import elan.fla11.roborun.settings.GameSettings;
 	import elan.fla11.roborun.utils.ConnectionManager;
+	import elan.fla11.roborun.utils.KeyboardManager;
 	import elan.fla11.roborun.utils.LevelCamera;
 	import elan.fla11.roborun.utils.LevelLoader;
 	import elan.fla11.roborun.utils.SpritePool;
@@ -30,7 +31,9 @@ package elan.fla11.roborun.controllers
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.ui.Keyboard;
 	import flash.utils.setTimeout;
 
 	public class GameController extends Sprite
@@ -50,12 +53,15 @@ package elan.fla11.roborun.controllers
 		private var _gameMenuGfx		:GameBackground;
 		
 		private var _userID				:String;
+		private var _userOrder			:uint;
+		private var _userDetails		:Object;
 		
 		private var _players			:Array;
 		
 		private var _chatPage			:ChatPage;
 		private var _chatBtn			:ChatBtnGfx;
 		private var _infoBtn			:InfoBtnGfx;
+		private var _isChatOpen			:Boolean;
 		
 		public function GameController()
 		{
@@ -79,6 +85,13 @@ package elan.fla11.roborun.controllers
 			_world = new Sprite();
 			addChild( _world );
 
+			initChat();
+			
+			ConnectionManager.dispatcher.addEventListener(ConnectionEvent.CONNECTED, onConnected_initNewGame);
+		}
+		
+		private function initChat(): void
+		{
 			_infoBtn = new InfoBtnGfx;
 			_infoBtn.x = 768;
 			_infoBtn.y = 615;
@@ -92,11 +105,21 @@ package elan.fla11.roborun.controllers
 			addChild(_chatBtn);
 			
 			_chatPage = new ChatPage();
+			GameSettings.STAGE.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			_chatPage.addEventListener(Event.CHANGE, onChatChange_playChatBtn);
-			_chatPage.addEventListener(ButtonEvent.CLOSE, handleChatCloseBtnClicked);
-			
-			
-			ConnectionManager.dispatcher.addEventListener(ConnectionEvent.CONNECTED, onConnected_initNewGame);
+			_chatPage.addEventListener(ButtonEvent.CLOSE, handleChatCloseBtnClicked);			
+		}
+		
+		private function onKeyDown( e:KeyboardEvent ): void
+		{
+			trace( ' keydown ', e.keyCode, e.keyCode == Keyboard.C );
+			switch( e.keyCode )
+			{
+				case Keyboard.C:
+					if( !_isChatOpen ) handleChatBtnClicked();
+					else handleChatCloseBtnClicked();
+					break;
+			}
 		}
 		
 		private function onChatChange_playChatBtn( e:Event ): void
@@ -104,34 +127,32 @@ package elan.fla11.roborun.controllers
 			_chatBtn.play();
 		}
 		
-		private function handleChatBtnClicked(evt:MouseEvent):void
+		private function handleChatBtnClicked(evt:MouseEvent = null):void
 		{
 			_chatBtn.gotoAndStop( 0 );
 			addChild(_chatPage);
 			_chatPage.activateEnter();
-			_camera.deactivate();
+			_isChatOpen = true;
+			if( _camera != null ) _camera.deactivate();
 		}
 		
-		private function handleChatCloseBtnClicked(evt:ButtonEvent):void
+		private function handleChatCloseBtnClicked(evt:ButtonEvent = null):void
 		{
 			_chatBtn.gotoAndStop( 0 );
 			removeChild(_chatPage);
 			_chatPage.deactivateEnter();
-			_camera.activate();
+			_isChatOpen = false;
+			if( _camera != null ) _camera.activate();
 		}
 		
 		
 		private function onConnected_initNewGame( e:ConnectionEvent ): void
 		{
-			_levelLoader.loadLevel( LevelModel.levels[e.user.details.level].source );
-			_levelLoader.addEventListener(Event.COMPLETE, onComplete_startGame);
-			_level = _levelLoader.level;
-			_world.addChild( _level );
-			
-			_robots[0] = addRobot( e.user.details.robot, e.user.id );
-			_world.addChild( _robots[0] );
 			
 			_userID = e.user.id;
+			_userOrder = e.user.details.playerOrder;
+			_userDetails = e.user.details;
+			
 			
 			addEventListener(Event.ENTER_FRAME, onLoop);
 			ConnectionManager.dispatcher.addEventListener(ConnectionEvent.USER_ADDED, onUserAdded_addNewPlayer);
@@ -145,38 +166,25 @@ package elan.fla11.roborun.controllers
 			var idx : uint = e.userCount -1;
 			_chatPage.players = e.userArray;
 			
-			if( idx < _levelLoader.startPositions.length )
+			// Joining player
+			if( e.user.details.level != undefined)
 			{
-				_robots[idx] = addRobot( e.user.details.robot, e.user.id );
-				_world.addChild( _robots[idx] );
-
-
-				for (var i:int = 0; i < e.userArray.length; i++) 
-				{
-					for (var j:int = 0; j < _robots.length; j++) 
-					{
-						trace( _robots[j].userID, e.userArray[i].id ,_robots[j].userID == e.userArray[i].id, i, j ,e.userArray[i].name , e.userArray[i].stamp );
-						
-						if( _robots[j].userID == e.userArray[i].id )
-						{
-
-							_robots[j].x = _levelLoader.startPositions[i].x;
-							_robots[j].y = _levelLoader.startPositions[i].y;
-							
-						}
-					}
-					
-				}
+				_levelLoader.loadLevel( LevelModel.levels[e.user.details.level].source );
+				_robots.push( addRobot( e.user.details.robot, e.user.id ) );
+				_robots.push( addRobot( _userDetails.robot, _userID ) );
+			}
+			// Host player
+			else
+			{
+				_levelLoader.loadLevel( LevelModel.levels[_userDetails.level].source );
+				_robots.push( addRobot( _userDetails.robot, _userID ) );
+				_robots.push( addRobot( e.user.details.robot, e.user.id ) );
 			}
 			
-			else trace( 'to many users');
+			_levelLoader.addEventListener(Event.COMPLETE, onComplete_startGame);
+			_level = _levelLoader.level;
+			_world.addChild( _level );		
 			
-			trace( e.userCount, _levelLoader.startPositions.length, e.userCount == _levelLoader.startPositions.length );
-			
-			if( e.userCount == _levelLoader.startPositions.length )
-			{
-				addCards();
-			}
 		}
 		
 		private function onDataReceived_playRound( e:ConnectionEvent ): void
@@ -206,6 +214,8 @@ package elan.fla11.roborun.controllers
 				trace( _players[i].points[0] );
 			}
 			
+
+			
 			trace(' order all:', order );
 			
 			trace( 'order:', order.length, _players[ order[0] ] ); 
@@ -216,24 +226,24 @@ package elan.fla11.roborun.controllers
 			{
 				case GameSettings.BACK_UP:
 					trace(' back up' ); 
-					_robots[0].move( -1 );
+					_robots[order[0]].move( -1 );
 					break;
 				
 				case GameSettings.MOVE_ONE:
 					trace(' move 1' );
-					_robots[0].move( 1 );
+					_robots[order[0]].move( 1 );
 					
 					break;
 				
 				case GameSettings.MOVE_TWO:
-					_robots[0].move( 2 );
+					_robots[order[0]].move( 2 );
 					trace(' move 2' );
 					
 					break;
 				
 				case GameSettings.MOVE_THREE:
 					trace(' move 3' );
-					_robots[0].move( 3 );
+					_robots[order[0]].move( 3 );
 					
 					
 					break;
@@ -255,15 +265,35 @@ package elan.fla11.roborun.controllers
 		
 		private function onComplete_startGame( e:Event ): void
 		{
-			_numCard = 9;
-			_robots[0].x = _levelLoader.startPositions[0].x;
-			_robots[0].y = _levelLoader.startPositions[0].y;			
+			_numCard = 9;		
 			_camera.setWorld( _world );
+			
+			/*var orderIdx : uint = _robots.length - (1 + _userOrder);
+
+			_robots[ _userOrder ].x = _levelLoader.startPositions[ _userOrder ].x;
+			_robots[ _userOrder ].y = _levelLoader.startPositions[ _userOrder ].y;
+			
+			_robots[ orderIdx ].x = _levelLoader.startPositions[ orderIdx ].x;
+			_robots[ orderIdx ].y = _levelLoader.startPositions[ orderIdx ].y;
+*/			
+			for (var i:int = 0; i < _robots.length; i++) 
+			{
+				_robots[ i ].x = _levelLoader.startPositions[ i ].x;
+				_robots[ i ].y = _levelLoader.startPositions[ i ].y;
+				_world.addChild( _robots[ i ] );
+				
+			}
+			
+			
+			/*_world.addChild( _robots[ orderIdx ] );
+			_world.addChild( _robots[ _userOrder ] );*/
+			
 			
 			_world.addEventListener(MouseEvent.CLICK, onClick_add);
 			_gameMenuGfx.addEventListener(MouseEvent.CLICK, onClick_remove);
 			
-			
+			addCards();
+
 		}
 		
 		private function onClick_add( e:MouseEvent ): void

@@ -93,7 +93,7 @@ package elan.fla11.roborun.view.pages
 				trace( 'groupName', GroupNameInput.Tf.text );
 				trace( 'userName', UserNameInput.Tf.text );	
 			
-				ConnectionManager.connect(GroupNameInput.Tf.text, {userName: UserNameInput.Tf.text, robot: SlideCollection.robotIndex, level: 0});
+				ConnectionManager.connect(GroupNameInput.Tf.text, {userName: UserNameInput.Tf.text, robot: SlideCollection.robotIndex, level: _lvlIdx, playerOrder:0});
 				dispatchEvent( new Event( StartEvent.START_GAME, true ) );
 				
 			}
