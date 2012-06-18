@@ -75,6 +75,8 @@ package elan.fla11.roborun.view.pages
 			_chat.addChild(_scroller);
 			_scroller.x = _chatMask.x + _chatMask.width;
 			_scroller.y = _chatMask.y;
+			
+			checkSize();
 		}
 		
 		private function handleScroll(evt:ScrollEvent):void
@@ -98,11 +100,19 @@ package elan.fla11.roborun.view.pages
 		private function onChatMsgReceived(evt:ConnectionEvent):void
 		{
 			_chat.chatWindow.appendText(evt.message.user + ': ' +evt.message.text+'\n');
+			checkSize();
+		}
+		
+		private function checkSize():void
+		{
 			if(_chat.chatWindow.height > _chatMask.height)
 			{
 				_scroller.visible = true;
 				if(_chat.chatWindow.height > _chatMask.height)
+				{
 					_scroller.msgScroll();
+					_scroller.activateScroll();
+				}
 			}
 		}
 		
