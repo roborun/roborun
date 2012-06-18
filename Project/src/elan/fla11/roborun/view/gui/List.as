@@ -73,6 +73,7 @@ package elan.fla11.roborun.view.gui
 				_scroller.y = 12;
 				addChild(_scroller);
 				_scroller.addEventListener(ScrollEvent.SCROLLING, handleScrollEvent);
+				_scroller.activateScroll();
 			}
 		}
 		
