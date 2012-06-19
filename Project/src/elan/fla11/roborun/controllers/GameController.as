@@ -219,6 +219,7 @@ package elan.fla11.roborun.controllers
 			}
 
 			if( _roundCount < 5 ) movePlayer();
+			else addCards();
 			
 		}
 		
@@ -239,8 +240,7 @@ package elan.fla11.roborun.controllers
 				
 				case GameSettings.MOVE_TWO:
 					_robots[_order[_orderIdx]].move( 2 );
-					trace(' move 2' );
-					
+					trace(' move 2' );	
 					break;
 				
 				case GameSettings.MOVE_THREE:
@@ -271,15 +271,16 @@ package elan.fla11.roborun.controllers
 		
 		private function onRobotMoved( e:GameEvent ): void
 		{
-			
 			if( _orderIdx < 1 )
 			{
-				++_orderIdx;
+				_orderIdx++;
 				movePlayer();
 			}
 			else
 			{
-				++_roundCount;
+				removeChild( _cards[ _roundCount ] );
+				SpritePool.returnCard( _cards[ _roundCount  ] );
+				_roundCount++;
 				_orderIdx = 0;
 				playRound();
 			}
@@ -290,7 +291,7 @@ package elan.fla11.roborun.controllers
 			_numCard = 9;		
 			_camera.setWorld( _world );
 					
-			for (var i:int = 0; i < _robots.length; i++) 
+			for (var i:int = 0; i < 2; i++) 
 			{
 				_robots[ i ].x = _levelLoader.startPositions[ i ].x;
 				_robots[ i ].y = _levelLoader.startPositions[ i ].y;
@@ -335,6 +336,8 @@ package elan.fla11.roborun.controllers
 		private function addChoosenCards(): void
 		{
 			_cards = SpritePool.getChoosenCards();
+			
+			trace( ' num of cards:', _cards.length );
 			
 			var points : Array = []; 
 			var types : Array = []; 

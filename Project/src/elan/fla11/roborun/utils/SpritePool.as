@@ -54,11 +54,19 @@ package elan.fla11.roborun.utils
 		
 		public static function choosenCard( s:Sprite ): void
 		{
+			init();
 			_choosenPool.push( s );
+		}
+
+		public static function clearChoosenCards(): void
+		{
+			init();
+			_choosenPool = [];
 		}
 
 		public static function getChoosenCards(): Array
 		{
+			init();
 			return _choosenPool;
 		}
 	}
