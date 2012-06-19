@@ -29,6 +29,8 @@ package elan.fla11.roborun.utils
 		
 		private var _startPositions	:Vector.<Point>;
 		private var _flagPositions	:Vector.<Point>;
+		private static var _levelDesign	:BitmapData;
+		
 		
 		public function LevelLoader()
 		{
@@ -48,6 +50,7 @@ package elan.fla11.roborun.utils
 			return _level;
 		}
 
+
 		public function get startPositions(): Vector.<Point>
 		{
 			return _startPositions;
@@ -57,23 +60,28 @@ package elan.fla11.roborun.utils
 		{
 			return _flagPositions;
 		}
+
+		public static function get levelDesign(): BitmapData
+		{
+			return _levelDesign;
+		}
 		
 		private function onComplete_createLevel( e:Event ): void
 		{
-			var levelDesign : BitmapData = Bitmap( _levelLoader.content ).bitmapData;
+			_levelDesign = Bitmap( _levelLoader.content ).bitmapData;
 			
 			_startPositions = new Vector.<Point>();
 			_flagPositions = new Vector.<Point>();
 			
 			trace( 'creating level' );
 			
-			for (var col:uint = 0; col < levelDesign.width; col++) 
+			for (var col:uint = 0; col < _levelDesign.width; col++) 
 			{
-				for (var row:uint = 0; row < levelDesign.height; row++) 
+				for (var row:uint = 0; row < _levelDesign.height; row++) 
 				{
 					var levelObject : LevelObject;
 				
-					switch( levelDesign.getPixel( col, row ) )
+					switch( _levelDesign.getPixel( col, row ) )
 					{
 						case ColorCode.FLOOR:
 							levelObject = new LevelObject();
