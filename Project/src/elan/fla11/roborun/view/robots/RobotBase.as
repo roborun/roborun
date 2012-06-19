@@ -158,7 +158,7 @@ package elan.fla11.roborun.view.robots
 				{
 					if( isAbleToProceed( _levelDesign.getPixel( x+1, y ) ) )
 					{
-						++y;
+						++x;
 						_isFinished = false;						
 					}
 					else
