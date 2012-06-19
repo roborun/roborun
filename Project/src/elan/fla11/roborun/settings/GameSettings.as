@@ -4,6 +4,8 @@ package elan.fla11.roborun.settings
 
 	public class GameSettings
 	{
+		public static const INSTRUCTIONS_URL	:String = 'http://www.eliasj.se/roborun/instructions/roboruninstructions.pdf';
+		
 		public static const LEVEL_URL			:String = 'levels.xml';
 
 		public static const STAGE_W				:uint = 1024;

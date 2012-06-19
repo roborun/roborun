@@ -1,21 +1,23 @@
 package elan.fla11.roborun.controllers
 {
-	import flash.display.Sprite;
-	
 	import elan.fla11.roborun.events.ButtonEvent;
 	import elan.fla11.roborun.events.ConnectionEvent;
+	import elan.fla11.roborun.settings.GameSettings;
 	import elan.fla11.roborun.utils.ConnectionManager;
 	import elan.fla11.roborun.view.pages.InstructionsPage;
 	import elan.fla11.roborun.view.pages.JoinGamePage;
 	import elan.fla11.roborun.view.pages.NewGamePage;
 	import elan.fla11.roborun.view.pages.StartPage;
 	
+	import flash.display.Sprite;
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
+	
 	public class PageController extends Sprite
 	{
 		private var _startPage:StartPage;
 		private var _newGamePage:NewGamePage;
 		private var _joinGamePage:JoinGamePage;
-		private var _instructionsPage:InstructionsPage;
 		
 		public function PageController()
 		{
@@ -36,9 +38,6 @@ package elan.fla11.roborun.controllers
 			_joinGamePage = new JoinGamePage();
 			_joinGamePage.addEventListener(ButtonEvent.BACK, handleButtonClicked_back);
 			
-			_instructionsPage = new InstructionsPage();
-			_instructionsPage.addEventListener(ButtonEvent.BACK, handleButtonClicked_back);
-			
 			restart();
 		}
 		
@@ -49,9 +48,6 @@ package elan.fla11.roborun.controllers
 			
 			_joinGamePage.visible = false;
 			addChild(_joinGamePage);
-			
-			_instructionsPage.visible = false;
-			addChild(_instructionsPage);
 			
 			_startPage.visible = true;
 		}
@@ -72,15 +68,13 @@ package elan.fla11.roborun.controllers
 		
 		private function showInstructions(evt:ButtonEvent):void
 		{
-			_startPage.visible = false;
-			_instructionsPage.visible = true;
+			navigateToURL(new URLRequest(GameSettings.INSTRUCTIONS_URL), '_blank');
 		}
 		
 		private function handleButtonClicked_back(evt:ButtonEvent):void
 		{
 			removeChild(_newGamePage);
 			removeChild(_joinGamePage);
-			removeChild(_instructionsPage);
 			restart();
 		}
 		
