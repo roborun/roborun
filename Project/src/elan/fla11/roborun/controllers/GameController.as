@@ -33,6 +33,8 @@ package elan.fla11.roborun.controllers
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
 	import flash.ui.Keyboard;
 	import flash.utils.setTimeout;
 
@@ -69,8 +71,10 @@ package elan.fla11.roborun.controllers
 		private var _order				:Array;
 		private var _roundCount			:uint;
 		private var _orderIdx			:uint;
+		private var _levelFunctionCount :uint;
 		
-		private var _levelFunctionCount	:uint;
+		private var _listeners			:Boolean;
+
 		
 		public function GameController()
 		{
@@ -94,12 +98,12 @@ package elan.fla11.roborun.controllers
 			_world = new Sprite();
 			addChild( _world );
 
-			initChat();
+			initButtons();
 			
 			ConnectionManager.dispatcher.addEventListener(ConnectionEvent.CONNECTED, onConnected_initNewGame);
 		}
 		
-		private function initChat(): void
+		private function initButtons(): void
 		{
 			_infoBtn = new InfoBtnGfx;
 			_infoBtn.x = 768;
@@ -110,13 +114,25 @@ package elan.fla11.roborun.controllers
 			_chatBtn.x = 879;
 			_chatBtn.y = 615;
 			_chatBtn.gotoAndStop( 0 );
-			_chatBtn.addEventListener(MouseEvent.CLICK, handleChatBtnClicked);
-			addChild(_chatBtn);
+			addChild(_chatBtn);		
 			
 			_chatPage = new ChatPage();
+		}
+		
+		private function handleInfoBtnClicked(evt:MouseEvent = null):void
+		{
+			navigateToURL(new URLRequest(GameSettings.INSTRUCTIONS_URL), '_blank');
+		}
+		
+		
+		private function initButtonListeners():void
+		{
+			_listeners = true;
+			_infoBtn.addEventListener(MouseEvent.CLICK, handleInfoBtnClicked);
+			_chatBtn.addEventListener(MouseEvent.CLICK, handleChatBtnClicked);
 			GameSettings.STAGE.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			_chatPage.addEventListener(Event.CHANGE, onChatChange_playChatBtn);
-			_chatPage.addEventListener(ButtonEvent.CLOSE, handleChatCloseBtnClicked);			
+			_chatPage.addEventListener(ButtonEvent.CLOSE, handleChatCloseBtnClicked);
 		}
 		
 		private function onKeyDown( e:KeyboardEvent ): void
@@ -126,8 +142,11 @@ package elan.fla11.roborun.controllers
 			{
 				case Keyboard.C:
 					if( !_isChatOpen ) handleChatBtnClicked();
-					else handleChatCloseBtnClicked();
 					break;
+				
+				case Keyboard.I:
+					if( !_isChatOpen ) handleInfoBtnClicked();
+					
 			}
 		}
 		
@@ -199,7 +218,11 @@ package elan.fla11.roborun.controllers
 		}
 		
 		private function onDataReceived_playRound( e:ConnectionEvent ): void
-		{	
+		{
+			if(_listeners == false)
+				initButtonListeners();
+			
+
 			_players[ _coUserOrder ] = e.gameData;
 			
 			_roundCount = 0;
