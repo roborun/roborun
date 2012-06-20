@@ -6,7 +6,7 @@ package elan.fla11.roborun.settings
 	{
 		public static const INSTRUCTIONS_URL	:String = 'http://www.eliasj.se/roborun/instructions/roboruninstructions.pdf';
 		
-		public static const LEVEL_URL			:String = 'levels.xml';
+		public static const LEVEL_URL			:String = 'http://www.eliasj.se/roborun/levels.xml';
 
 		public static const STAGE_W				:uint = 1024;
 		public static const STAGE_H				:uint = 750;
