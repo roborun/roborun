@@ -4,6 +4,8 @@ package elan.fla11.roborun.view.slideshow
 	import elan.fla11.roborun.SlideShowButton_leftGfx;
 	import elan.fla11.roborun.SlideShowButton_rightGfx;
 	import elan.fla11.roborun.SlideShowScreenGfx;
+	import elan.fla11.roborun.sound.Sounds;
+	import elan.fla11.roborun.utils.SoundManager;
 	
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
@@ -63,13 +65,20 @@ package elan.fla11.roborun.view.slideshow
 			_button_right.addEventListener(MouseEvent.CLICK, handleClick_right);
 		}
 		
+		private function playSound():void
+		{
+			SoundManager.playSound(Sounds.BUTTON, .1);
+		}
+		
 		private function handleClick_right(evt:MouseEvent):void
 		{
+			playSound();
 			_slides.nextSlide();
 		}
 		
 		private function handleClick_left(evt:MouseEvent):void
 		{
+			playSound();
 			_slides.prevSlide();
 		}
 	}
