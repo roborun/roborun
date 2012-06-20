@@ -2,11 +2,23 @@
 	<levels>
 		<level>
 			<title>Futurama</title>
-			<source>../assets/levels/level1.png</source>
+			<source>../assets/levels/level3.png</source>
 		</level>
 		<level>
 			<title>Elias supreme</title>
 			<source>../assets/levels/level2.png</source>
+		</level>
+		<level>
+			<title>Castle</title>
+			<source>../assets/levels/castle.png</source>
+		</level>
+		<level>
+			<title>4U</title>
+			<source>../assets/levels/level4.png</source>
+		</level>
+		<level>
+			<title>Track & Field</title>
+			<source>../assets/levels/track_n_field.png</source>
 		</level>
 		
 	</levels>
