@@ -18,8 +18,10 @@ package elan.fla11.roborun.view.robots
 	
 	public class RobotBase extends Sprite
 	{
-		protected var _userID			:String;
+		public var takenFlags			:uint;
+		
 		protected var _robotID			:uint;
+		protected var _userDetails		:Object;
 		
 		protected var _gfx				:Sprite;
 		
@@ -27,6 +29,7 @@ package elan.fla11.roborun.view.robots
 		private var _deltaX				:int;
 		private var _deltaY				:int;
 
+		private var _checkPointPos		:Point;
 		private var _prevPos			:Point;
 		private var _prevRot			:uint;
 		
@@ -35,14 +38,26 @@ package elan.fla11.roborun.view.robots
 		
 		private var _isFinished			:Boolean;
 		private var _wasFinished		:Boolean;
-		private var _isPushedFinished	:Boolean;
-		private var _wasPushedFinished	:Boolean;
 		private var _isPushed			:Boolean;
+		private var _isSecTime		:Boolean;	
 		
 		private var _levelDesign		:BitmapData;
 
-		public function RobotBase()
+		public function RobotBase( userDetails:Object )
 		{
+			_userDetails = userDetails;
+			
+			trace( '__________________________________' );
+			trace( '	ROBOT AND USER INFO!' );
+			trace( '	UserName:', _userDetails.name );
+			trace( '	UserID:', _userDetails.id );
+			trace( '__________________________________' );
+			initBase();
+		}
+		
+		private function initBase(): void
+		{
+			_checkPointPos = new Point();
 			_prevPos = new Point();
 			_prevRot = GameSettings.RIGHT;
 			
@@ -57,7 +72,6 @@ package elan.fla11.roborun.view.robots
 
 			_functionDelay = new Timer(1000);
 			_functionDelay.addEventListener(TimerEvent.TIMER, dispatchFunctionFinished);
-			trace( 'Init robot', _userID );
 		}
 
 		public function setStartPos(): void
@@ -66,27 +80,29 @@ package elan.fla11.roborun.view.robots
 			_prevPos.y = y;		
 			
 			_levelDesign = LevelLoader.levelDesign;
+			
+			setCheckPoint();
 		}
 		
-		public function get userID(): String
+		public function setCheckPoint(): void
 		{
-			return _userID;
+			_checkPointPos.x = x;
+			_checkPointPos.y = y;			
 		}
-		
-		public function pushX( d:int = 0 ): void
+		public function gotoCheckPoint(): void
 		{
+			x = _checkPointPos.x;
+			y = _checkPointPos.y
+				
+			_gfx.rotation = GameSettings.RIGHT;	
+				
 			_prevPos.x = x;
-			_prevPos.y = y;
-			_deltaX = d * GameSettings.GRID_SIZE;
-			_isPushed = true;
+			_prevPos.y = y;	
 		}
 
-		public function pushY( d:int = 0 ): void
+		public function get userDetails(): Object
 		{
-			_prevPos.x = x;
-			_prevPos.y = y;
-			_deltaY = d * GameSettings.GRID_SIZE;
-			_isPushed = true;
+			return _userDetails;
 		}
 
 		public function move( d:int = 0 ): void
@@ -115,26 +131,22 @@ package elan.fla11.roborun.view.robots
 			{	
 				case ColorCode.BAND_PLATE_RIGHT:
 					trace( 'push right' );
-					//pushX( 1 );
 					TweenLite.to( this, 2, {x: (x + GameSettings.GRID_SIZE), onComplete: levelFunctionFinished});
 					break;
 				
 				case ColorCode.BAND_PLATE_LEFT:
 					trace( 'push left' );
-//					pushX( -1 );
 					TweenLite.to( this, 2, {x: (x - GameSettings.GRID_SIZE), onComplete: levelFunctionFinished});
 					break;
 				
 				case ColorCode.BAND_PLATE_UP:
 					trace( 'push up');
 					TweenLite.to( this, 2, {y: (y - GameSettings.GRID_SIZE), onComplete: levelFunctionFinished});
-//					pushY( -1 );
 					break;
 				
 				case ColorCode.BAND_PLATE_DOWN:
 					trace('push down');
 					TweenLite.to( this, 2, {y: (y + GameSettings.GRID_SIZE), onComplete: levelFunctionFinished});
-//					pushY( 1 );
 					break;
 		
 				case ColorCode.LEFT_ROTATION:
@@ -145,8 +157,10 @@ package elan.fla11.roborun.view.robots
 					rotatePlate( 90 );
 					break;
 				
-				//case ColorCode.FLAG_PLATE:
-					//break;
+				case ColorCode.FLAG_PLATE:
+					dispatchEvent( new GameEvent(GameEvent.ON_FLAG) );
+					levelFunctionFinished();
+					break;
 				
 				default:
 					levelFunctionFinished();
@@ -346,81 +360,19 @@ package elan.fla11.roborun.view.robots
 			
 			_wasFinished = _isFinished;
 			
-
-			/*if( _isPushed )
+			if( _levelDesign.getPixel( x/GameSettings.GRID_SIZE, y/GameSettings.GRID_SIZE ) == ColorCode.HOLE ) 
 			{
-				if( y > _prevPos.y - _deltaY )
+				if( !_isSecTime )
 				{
-					if( isAbleToProceed( _levelDesign.getPixel( x/GameSettings.GRID_SIZE, y/GameSettings.GRID_SIZE -1 ) ) )
-					{
-						--y;
-						_isPushedFinished = false;
-					}
-					else
-					{
-						_delta = 0;
-						_prevPos.y = y;
-						
-						_wasPushedFinished = false;
-						_isPushedFinished = true;
-					}
+					dispatchEvent( new GameEvent( GameEvent.DEAD ) );
+					_delta = 0;
+					movedFinished();
 				}
-				else if( y < _prevPos.y - _deltaY)
-				{
-					if( isAbleToProceed( _levelDesign.getPixel( x/GameSettings.GRID_SIZE, y/GameSettings.GRID_SIZE +1 ) ) )
-					{
-						++y;
-						_isPushedFinished = false;
-					}
-					else
-					{
-						_delta = 0;
-						_prevPos.y = y;
-						_wasPushedFinished = false;
-						_isPushedFinished = true;
-						
-					}
-				}
-				
-				if( x < _prevPos.x + _deltaX )
-				{
-					if( isAbleToProceed( _levelDesign.getPixel( x/GameSettings.GRID_SIZE +1, y/GameSettings.GRID_SIZE ) ) )
-					{
-						++x;						
-						_isPushedFinished = false;
-					}
-					else
-					{
-						_delta = 0;
-						_prevPos.y = y;
-						_wasPushedFinished = false;
-						_isPushedFinished = true;
-						
-					}
-				}
-				else if( x > _prevPos.x + _deltaX )
-				{
-					if( isAbleToProceed( _levelDesign.getPixel( x/GameSettings.GRID_SIZE -1, y/GameSettings.GRID_SIZE ) ) )
-					{
-						--x;					
-						_isPushedFinished = false;						
-					}
-					else
-					{
-						_delta = 0;
-						_prevPos.y = y;
-						_wasPushedFinished = false;
-						_isPushedFinished = true;						
-					}
-				}
-				if( _isPushedFinished == _wasPushedFinished ) levelFunctionFinished();
-			}*/
+				_isSecTime = true;
+			}
+			else _isSecTime = false;
 			
-			//if( _levelDesign.getPixel( x, y ) == ColorCode.HOLE ) trace(' DIE!!');
 			
-			//trace( _isFinished, _wasFinished );
-			
-			//_wasPushedFinished = _isPushedFinished;
 		}
 		
 		private function roundToNearestGrid(value:uint):uint{

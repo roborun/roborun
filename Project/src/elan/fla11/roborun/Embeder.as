@@ -12,7 +12,7 @@ package elan.fla11.roborun
 		[Embed(source="../assets/pictures/GameParts/hole.png")]
 		public static const HOLE						:Class;
 
-		[Embed(source="../assets/pictures/GameParts/wall.png")]
+		[Embed(source="../assets/pictures/GameParts/Wall.png")]
 		public static const WALL						:Class;
 
 		

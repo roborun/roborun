@@ -2,10 +2,12 @@ package elan.fla11.roborun.controllers
 {
 	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
+	import com.reyco1.multiuser.data.UserObject;
 	
 	import elan.fla11.roborun.ChatBtnGfx;
 	import elan.fla11.roborun.Embeder;
 	import elan.fla11.roborun.InfoBtnGfx;
+	import elan.fla11.roborun.ResultScreen;
 	import elan.fla11.roborun.events.ButtonEvent;
 	import elan.fla11.roborun.events.ConnectionEvent;
 	import elan.fla11.roborun.events.GameEvent;
@@ -56,6 +58,7 @@ package elan.fla11.roborun.controllers
 		private var _cardBanner			:CardBanner;
 		private var _gameMenuGfx		:GameBackground;
 		
+		private var _user				:UserObject;	
 		private var _userID				:String;
 		private var _userDetails		:Object;
 		private var _userOrder			:uint;
@@ -95,6 +98,7 @@ package elan.fla11.roborun.controllers
 			_cardBanner = new CardBanner();
 			
 			_gameMenuGfx = new GameBackground();
+			_gameMenuGfx.addEventListener(GameEvent.DEAD, onAllLifesGone_dispatchGameOvet);
 			addChild( _gameMenuGfx );
 			
 			_world = new Sprite();
@@ -181,10 +185,11 @@ package elan.fla11.roborun.controllers
 		
 		private function onConnected_initNewGame( e:ConnectionEvent ): void
 		{
-			
+			_user = e.user;
 			_userID = e.user.id;
 			_userOrder = e.user.details.playerOrder;
 			_userDetails = e.user.details;
+			
 			
 			
 			addEventListener(Event.ENTER_FRAME, onLoop);
@@ -205,15 +210,15 @@ package elan.fla11.roborun.controllers
 			if( e.user.details.level != undefined)
 			{
 				_levelLoader.loadLevel( LevelModel.levels[e.user.details.level].source );
-				_robots.push( addRobot( e.user.details.robot, e.user.id ) );
-				_robots.push( addRobot( _userDetails.robot, _userID ) );
+				_robots.push( addRobot( e.user.details.robot, e.user ) );
+				_robots.push( addRobot( _userDetails.robot, _user ) );
 			}
 			// Host player
 			else
 			{
 				_levelLoader.loadLevel( LevelModel.levels[_userDetails.level].source );
-				_robots.push( addRobot( _userDetails.robot, _userID ) );
-				_robots.push( addRobot( e.user.details.robot, e.user.id ) );
+				_robots.push( addRobot( _userDetails.robot, _user ) );
+				_robots.push( addRobot( e.user.details.robot, e.user ) );
 			}
 			
 			_levelLoader.addEventListener(Event.COMPLETE, onComplete_startGame);
@@ -227,12 +232,18 @@ package elan.fla11.roborun.controllers
 			if(_listeners == false)
 				initButtonListeners();
 			
-
-			_players[ _coUserOrder ] = e.gameData;
+			if( e.gameData.victory == undefined )
+			{
+				_players[ _coUserOrder ] = e.gameData;
 			
-			_roundCount = 0;
-			_orderIdx = 0;
-			playRound();	
+				_roundCount = 0;
+				_orderIdx = 0;
+				playRound();			
+			}
+			else if( e.gameData.victory == false )
+			{
+				gameOver_restult( _robots[_coUserOrder].userDetails.name+' is dead. Victory is yours!' );
+			}
 		}
 		
 		private function playRound(): void
@@ -300,9 +311,7 @@ package elan.fla11.roborun.controllers
 					break;
 			}
 			
-			_robots[_order[_orderIdx]].addEventListener(GameEvent.MOVED, onRobotMoved);
-		
-
+			_robots[_order[_orderIdx]].addEventListener(GameEvent.MOVED, onRobotMoved);		
 		}
 		
 		private function onRobotMoved( e:GameEvent ): void
@@ -320,6 +329,11 @@ package elan.fla11.roborun.controllers
 				{
 					_robots[i].checkLevelFunctions();
 					_robots[i].addEventListener(GameEvent.LEVEL_FUNCTIONS, onLevelFunctionComplete);
+				}
+
+				for (var j:int = 0; j < _levelLoader.levelObjects.length; j++) 
+				{
+					_levelLoader.levelObjects[j].activate();
 				}
 			}
 		}
@@ -349,24 +363,26 @@ package elan.fla11.roborun.controllers
 				_robots[ i ].x = _levelLoader.startPositions[ i ].x;
 				_robots[ i ].y = _levelLoader.startPositions[ i ].y;
 				_robots[ i ].setStartPos();
+				_robots[ i ].addEventListener(GameEvent.ON_FLAG, handleRobotOnFlag_checkIfTaken);
+				_robots[ i ].addEventListener(GameEvent.DEAD, onRobotDie);
 				_world.addChild( _robots[ i ] );		
 			}
 
-			_world.addEventListener(MouseEvent.CLICK, onClick_add);
-			_gameMenuGfx.addEventListener(MouseEvent.CLICK, onClick_remove);
+			//_world.addEventListener(MouseEvent.CLICK, onClick_add);
+			//_gameMenuGfx.addEventListener(MouseEvent.CLICK, onClick_remove);
 			
 			addCards();
 
 		}
 		
-		private function onClick_add( e:MouseEvent ): void
+		/*private function onClick_add( e:MouseEvent ): void
 		{
 			_gameMenuGfx.addWarning();
 		}
 		private function onClick_remove( e:MouseEvent ): void
 		{
 			_gameMenuGfx.removeWarning();
-		}
+		}*/
 		
 		
 		private function addCards(): void
@@ -423,26 +439,90 @@ package elan.fla11.roborun.controllers
 			ConnectionManager.sendData( _gameObject );
 		}
 		
-		private function addRobot( robotID:uint, userID:String ): RobotBase
+		private function addRobot( robotID:uint, userDetails:Object ): RobotBase
 		{
 			var robot : RobotBase;
 			switch( robotID )
 			{
 				case GameSettings.BULL:
-					robot = new BullRobot( userID );
+					robot = new BullRobot( userDetails );
 					break;
 				
 				case GameSettings.GIRAFFE:
-					robot = new GiraffeRobot( userID );
+					robot = new GiraffeRobot( userDetails );
 					break;
 				
 				case GameSettings.WHEELIE:
-					robot = new WheelieRobot( userID );
+					robot = new WheelieRobot( userDetails );
 					break;
 			}
 			return robot;
 		}
 		
+		
+		private function handleRobotOnFlag_checkIfTaken( e:GameEvent ): void
+		{
+			var cur_robot : RobotBase = RobotBase( e.target );
+			
+			_gameMenuGfx.removeWarning();
+			
+			if( _levelLoader.flagPositions[ cur_robot.takenFlags ].x == cur_robot.x &&
+				_levelLoader.flagPositions[ cur_robot.takenFlags ].y == cur_robot.y )
+			{
+				cur_robot.takenFlags++;
+				cur_robot.setCheckPoint();
+				trace( 'FLAG TAKEN' );
+				
+				if( _levelLoader.flagPositions.length == cur_robot.takenFlags )
+				{		
+					if( _robots[_userOrder].userDetails.id == cur_robot.userDetails.id )
+					{
+						gameOver_restult( 'Congratulations, you won!' );  	
+						ConnectionManager.sendData( {victory: true} );
+					}
+					else
+					{
+						gameOver_restult( 'Too bad, you lost!' );  											
+					}
+				}
+			}	
+		}
+		
+		private function onRobotDie( e:GameEvent ): void
+		{
+			var cur_robot : RobotBase = RobotBase( e.target );
+			
+			trace( cur_robot.userDetails.name, 'died' );
+			
+			if( _userID == cur_robot.userDetails.id )
+			{
+				_gameMenuGfx.die();
+			}
+		
+			cur_robot.gotoCheckPoint();
+		}
+		
+		private function onAllLifesGone_dispatchGameOvet( e:GameEvent ): void
+		{
+			gameOver_restult( 'You lost! Next time, do like the Bee Gees and stay alive!' );
+		}
+		
+		private function gameOver_restult( text:String ): void
+		{
+			var resultScreen : ResultScreen = new ResultScreen();
+			addChild( resultScreen );
+			resultScreen.mouseChildren = false;
+			resultScreen.textfield.text = text;  					
+			
+			removeEventListener(Event.ENTER_FRAME, onLoop);
+			_gameMenuGfx.removeEventListener(GameEvent.DEAD, onAllLifesGone_dispatchGameOvet);
+			for (var i:int = 0; i < _robots.length; i++) 
+			{
+				_robots[i].removeEventListener(GameEvent.MOVED, onRobotMoved);
+				_robots[i].removeEventListener(GameEvent.LEVEL_FUNCTIONS, onLevelFunctionComplete);
+			}
+			
+		}
 		
 		private function onLoop( e:Event ): void
 		{

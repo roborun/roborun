@@ -1,5 +1,7 @@
 package elan.fla11.roborun.view.levelobjects
 {
+	import com.greensock.TweenLite;
+	
 	import elan.fla11.roborun.Embeder;
 	import elan.fla11.roborun.settings.GameSettings;
 
@@ -13,7 +15,7 @@ package elan.fla11.roborun.view.levelobjects
 		
 		override public function activate(): void
 		{
-			_object.rotation -= GameSettings.ROTATION_SPEED;
+			TweenLite.to( _object, 1, {rotation: _object.rotation + 90});
 		}
 	}
 }

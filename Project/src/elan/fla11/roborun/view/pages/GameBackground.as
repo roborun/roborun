@@ -1,10 +1,14 @@
 package elan.fla11.roborun.view.pages
 {
 	import elan.fla11.roborun.GameBackgroundGfx;
+	import elan.fla11.roborun.ResultScreen;
 	import elan.fla11.roborun.WarningGfx;
 	import elan.fla11.roborun.events.GameEvent;
+	import elan.fla11.roborun.utils.ConnectionManager;
 	
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	
 	/**
 	 * powerDown_btn (enable, disable) - button states
@@ -24,6 +28,8 @@ package elan.fla11.roborun.view.pages
 		
 		private var _lifes		:uint = 3;
 		
+		private var _warningDelay :Timer;
+		
 		public function GameBackground()
 		{
 			init();
@@ -33,6 +39,9 @@ package elan.fla11.roborun.view.pages
 		{
 			posWarnings();
 			reboot();
+			
+			_warningDelay = new Timer(1000);
+			_warningDelay.addEventListener(TimerEvent.TIMER, onTimer_removeWarnings);
 		}
 		
 		
@@ -48,24 +57,35 @@ package elan.fla11.roborun.view.pages
 				case 2:
 					diod_1.light.visible = false;
 					diod_1.darkness.visible = true;
-					removeAllWarning();
 					break;
 				
 				case 1:
 					diod_2.light.visible = false;
 					diod_2.darkness.visible = true;
-					removeAllWarning();
 					break;
 
 				case 0:
 					diod_3.light.visible = false;
 					diod_3.darkness.visible = true;
-					removeAllWarning();
-					break;
-					
+					break;	
 			}
+			
+			_warningDelay.start();
 		}
 		
+		private function onTimer_removeWarnings( e:TimerEvent ): void
+		{
+			_warningDelay.reset();
+			trace('________________');
+			trace( 'LIFE:', _lifes );
+			trace('________________');
+			if( _lifes > 0 ) removeAllWarning();
+			else 
+			{
+				ConnectionManager.sendData( {victory: false} );		
+				dispatchEvent( new GameEvent(GameEvent.DEAD) );
+			}
+		}
 		
 		/**
 		 * reactivate the robot after power down
@@ -138,7 +158,6 @@ package elan.fla11.roborun.view.pages
 				_warnings[i].y = 527;
 				_warnings[i].visible = false;
 				addChild( _warnings[i] );
-				
 			}
 		}
 		
