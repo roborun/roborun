@@ -9,7 +9,9 @@ package elan.fla11.roborun.view.pages
 	import elan.fla11.roborun.events.ConnectionEvent;
 	import elan.fla11.roborun.events.ScrollEvent;
 	import elan.fla11.roborun.settings.GameSettings;
+	import elan.fla11.roborun.sound.Sounds;
 	import elan.fla11.roborun.utils.ConnectionManager;
+	import elan.fla11.roborun.utils.SoundManager;
 	import elan.fla11.roborun.view.gui.Button;
 	import elan.fla11.roborun.view.gui.Scroller;
 	
@@ -101,6 +103,8 @@ package elan.fla11.roborun.view.pages
 		private function onChatMsgReceived(evt:ConnectionEvent):void
 		{
 			_chat.chatWindow.appendText(evt.message.user + ': ' +evt.message.text+'\n');
+			trace('SENDER: ', evt.message.sender, 'PLAYER ID: ',  _players[0].id, evt.message.sender != _players[0].id);
+			dispatchEvent( new ConnectionEvent(ConnectionEvent.MESSAGE_RECEIVED) );
 			checkSize();
 		}
 		
@@ -115,11 +119,12 @@ package elan.fla11.roborun.view.pages
 					_scroller.activateScroll();
 				}
 			}
-			dispatchEvent( new Event(Event.CHANGE) );
+			
 		}
 		
 		private function handleCloseClicked(evt:MouseEvent):void
 		{
+			SoundManager.playSound(Sounds.BUTTON, .1);
 			dispatchEvent(new ButtonEvent(ButtonEvent.CLOSE));
 		}
 		

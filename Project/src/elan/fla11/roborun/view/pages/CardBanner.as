@@ -7,6 +7,8 @@ package elan.fla11.roborun.view.pages
 	import elan.fla11.roborun.TimerTextField;
 	import elan.fla11.roborun.events.GameEvent;
 	import elan.fla11.roborun.settings.GameSettings;
+	import elan.fla11.roborun.sound.Sounds;
+	import elan.fla11.roborun.utils.SoundManager;
 	import elan.fla11.roborun.utils.SpritePool;
 	import elan.fla11.roborun.view.GameCard;
 	import elan.fla11.roborun.view.gui.CardOrderPlop;

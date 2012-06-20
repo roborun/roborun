@@ -13,10 +13,12 @@ package elan.fla11.roborun.controllers
 	import elan.fla11.roborun.models.LevelData;
 	import elan.fla11.roborun.models.LevelModel;
 	import elan.fla11.roborun.settings.GameSettings;
+	import elan.fla11.roborun.sound.Sounds;
 	import elan.fla11.roborun.utils.ConnectionManager;
 	import elan.fla11.roborun.utils.KeyboardManager;
 	import elan.fla11.roborun.utils.LevelCamera;
 	import elan.fla11.roborun.utils.LevelLoader;
+	import elan.fla11.roborun.utils.SoundManager;
 	import elan.fla11.roborun.utils.SpritePool;
 	import elan.fla11.roborun.view.GameCard;
 	import elan.fla11.roborun.view.gui.Button;
@@ -120,6 +122,7 @@ package elan.fla11.roborun.controllers
 		private function handleInfoBtnClicked(evt:MouseEvent = null):void
 		{
 			navigateToURL(new URLRequest(GameSettings.INSTRUCTIONS_URL), '_blank');
+			SoundManager.playSound(Sounds.BUTTON, .1);
 		}
 		
 		
@@ -129,7 +132,7 @@ package elan.fla11.roborun.controllers
 			_infoBtn.addEventListener(MouseEvent.CLICK, handleInfoBtnClicked);
 			_chatBtn.addEventListener(MouseEvent.CLICK, handleChatBtnClicked);
 			GameSettings.STAGE.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-			_chatPage.addEventListener(Event.CHANGE, onChatChange_playChatBtn);
+			_chatPage.addEventListener(ConnectionEvent.MESSAGE_RECEIVED, onChatChange_playChatBtn);
 			_chatPage.addEventListener(ButtonEvent.CLOSE, handleChatCloseBtnClicked);
 		}
 		
@@ -150,11 +153,13 @@ package elan.fla11.roborun.controllers
 		
 		private function onChatChange_playChatBtn( e:Event ): void
 		{
+			SoundManager.playSound(Sounds.CHAT, .02);
 			_chatBtn.play();
 		}
 		
 		private function handleChatBtnClicked(evt:MouseEvent = null):void
 		{
+			SoundManager.playSound(Sounds.BUTTON, .1);
 			if( _camera != null ) _camera.deactivate();
 			_chatBtn.gotoAndStop( 0 );
 			addChild(_chatPage);
@@ -344,15 +349,19 @@ package elan.fla11.roborun.controllers
 			_cardBanner.y = 515;
 			addChild( _cardBanner );
 			_cardBanner.dealCards( _numCard );
-			TweenLite.to( _cardBanner, 1, {x: 0, delay: 1} );
+			TweenLite.to( _cardBanner, 1, {x: 0, delay: 1, onStart:playSound} );
 			
 			_cardBanner.addEventListener(GameEvent.TIMES_UP, onTimesUp_tweenCardBanner);
 			
 		}
 		
+		private function playSound():void
+		{
+			SoundManager.playSound(Sounds.CARD_BANNER, .2);
+		}
 		private function onTimesUp_tweenCardBanner( e:GameEvent ): void
 		{
-			TweenLite.to( _cardBanner, 1, {x: GameSettings.STAGE_W, delay: 1, onComplete: addChoosenCards});		
+			TweenLite.to( _cardBanner, 1, {x: GameSettings.STAGE_W, delay: 1, onStart:playSound, onComplete: addChoosenCards});		
 		}
 		
 		private function addChoosenCards(): void

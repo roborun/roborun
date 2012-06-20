@@ -6,6 +6,9 @@ package elan.fla11.roborun.utils
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Transform;
 	import flash.ui.Keyboard;
 
 	public class LevelCamera /*extends Sprite*/
@@ -142,10 +145,10 @@ package elan.fla11.roborun.utils
 					}
 				}
 	
-				if( KeyboardManager.isKeyDown( Keyboard.UP ) ) _speedY = 5;
-				if( KeyboardManager.isKeyDown( Keyboard.DOWN ) ) _speedY = -5;
-				if( KeyboardManager.isKeyDown( Keyboard.LEFT ) ) _speedX = 5;
-				if( KeyboardManager.isKeyDown( Keyboard.RIGHT ) ) _speedX = -5;
+				if( KeyboardManager.isKeyDown( Keyboard.UP ) ) _speedY = 10;
+				if( KeyboardManager.isKeyDown( Keyboard.DOWN ) ) _speedY = -10;
+				if( KeyboardManager.isKeyDown( Keyboard.LEFT ) ) _speedX = 10;
+				if( KeyboardManager.isKeyDown( Keyboard.RIGHT ) ) _speedX = -10;
 				if( KeyboardManager.isKeyDown( Keyboard.Z ) ) _zoom -= 0.1;
 				if( KeyboardManager.isKeyDown( Keyboard.X ) ) _zoom += 0.1;
 				
