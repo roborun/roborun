@@ -70,6 +70,8 @@ package elan.fla11.roborun.controllers
 		private var _roundCount			:uint;
 		private var _orderIdx			:uint;
 		
+		private var _levelFunctionCount	:uint;
+		
 		public function GameController()
 		{
 			init();
@@ -197,7 +199,7 @@ package elan.fla11.roborun.controllers
 		}
 		
 		private function onDataReceived_playRound( e:ConnectionEvent ): void
-		{
+		{	
 			_players[ _coUserOrder ] = e.gameData;
 			
 			_roundCount = 0;
@@ -218,8 +220,14 @@ package elan.fla11.roborun.controllers
 				_order = [ _coUserOrder, _userOrder ]; 
 			}
 
-			if( _roundCount < 5 ) movePlayer();
-			else addCards();
+			if( _roundCount < 5 )
+			{
+				movePlayer();
+			}
+			else
+			{
+				addCards();
+			}
 			
 		}
 		
@@ -271,6 +279,7 @@ package elan.fla11.roborun.controllers
 		
 		private function onRobotMoved( e:GameEvent ): void
 		{
+			_robots[_order[_orderIdx]].removeEventListener(GameEvent.MOVED, onRobotMoved);
 			if( _orderIdx < 1 )
 			{
 				_orderIdx++;
@@ -278,11 +287,27 @@ package elan.fla11.roborun.controllers
 			}
 			else
 			{
+				_levelFunctionCount = 0;
+				for (var i:int = 0; i < _robots.length; i++) 
+				{
+					_robots[i].checkLevelFunctions();
+					_robots[i].addEventListener(GameEvent.LEVEL_FUNCTIONS, onLevelFunctionComplete);
+				}
+			}
+		}
+		
+		private function onLevelFunctionComplete( e:GameEvent ): void
+		{
+			trace( ' level functions complete');
+			_levelFunctionCount++;
+			
+			if( _levelFunctionCount > 1 )
+			{
 				removeChild( _cards[ _roundCount ] );
 				SpritePool.returnCard( _cards[ _roundCount  ] );
 				_roundCount++;
 				_orderIdx = 0;
-				playRound();
+				playRound();				
 			}
 		}
 		
