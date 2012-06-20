@@ -14,7 +14,7 @@ package elan.fla11.roborun.view.slideshow
 	{
 		private var _slides:Vector.<SlideBase>;
 		
-		private var _currentSlide:uint;
+		private static var _currentSlide:uint;
 		private var _prevSlide:uint;
 		private var _nextSlide:uint;
 		private var _robotName:RobotNameGfx;
@@ -37,6 +37,11 @@ package elan.fla11.roborun.view.slideshow
 			_robotName.y = this.height;
 			addChild(_robotName);
 			updateName();
+		}
+		
+		public static function get robotIndex(): uint
+		{
+			return _currentSlide;
 		}
 		
 		public function nextSlide():void
