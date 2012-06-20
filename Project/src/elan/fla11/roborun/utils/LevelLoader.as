@@ -28,6 +28,7 @@ package elan.fla11.roborun.utils
 		private var _levelLoader	:Loader;
 		private var _level			:Sprite;
 		
+		private var _levelObjects	:Vector.<LevelObject>;
 		private var _startPositions	:Vector.<Point>;
 		private var _flagPositions	:Vector.<Point>;
 		private static var _levelDesign	:BitmapData;
@@ -52,6 +53,11 @@ package elan.fla11.roborun.utils
 		}
 
 
+		public function get levelObjects(): Vector.<LevelObject>
+		{
+			return _levelObjects;
+		}
+		
 		public function get startPositions(): Vector.<Point>
 		{
 			return _startPositions;
@@ -73,6 +79,7 @@ package elan.fla11.roborun.utils
 			
 			_startPositions = new Vector.<Point>();
 			_flagPositions = new Vector.<Point>();
+			_levelObjects = new Vector.<LevelObject>();
 			
 			trace( 'creating level' );
 			
@@ -130,10 +137,12 @@ package elan.fla11.roborun.utils
 						
 						case ColorCode.LEFT_ROTATION:
 							levelObject = new LeftRotationPlate();
+							_levelObjects.push( levelObject );
 							break;
 
 						case ColorCode.RIGHT_ROTATION:
 							levelObject = new RightRotationPlate();
+							_levelObjects.push( levelObject );
 							break;
 
 						case ColorCode.START_PLATE:

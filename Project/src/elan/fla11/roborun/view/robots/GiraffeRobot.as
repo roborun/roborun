@@ -5,11 +5,10 @@ package elan.fla11.roborun.view.robots
 
 	public class GiraffeRobot extends RobotBase
 	{
-		public function GiraffeRobot( userID:String )
+		public function GiraffeRobot( userDetails:Object )
 		{
 			init();
-			_userID = userID;
-			super();
+			super(userDetails);
 		}
 		
 		private function init(): void

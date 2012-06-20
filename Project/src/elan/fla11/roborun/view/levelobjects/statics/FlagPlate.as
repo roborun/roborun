@@ -15,10 +15,9 @@ package elan.fla11.roborun.view.levelobjects.statics
 		
 		override protected function init(objectSrc:Class=null, withPlate:Boolean=true):void
 		{
-			_object = new GoalPlateGfx();
-			GoalPlateGfx(_object).numberTf.text = String( _nr );
-			trace( 'in flag, nr:', _object.numberTf.text );
-			addChild( _object );
+			var flag : GoalPlateGfx = new GoalPlateGfx();
+			flag.number_tf.text = String( _nr );
+			addChild( flag );
 		}
 		
 		public function get nr():uint

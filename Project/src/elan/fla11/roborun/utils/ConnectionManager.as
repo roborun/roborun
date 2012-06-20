@@ -75,9 +75,6 @@ package elan.fla11.roborun.utils
 			var event : ConnectionEvent = new ConnectionEvent( ConnectionEvent.CONNECTED );
 			event.user = user;
 			event.userArray = _connection.userArray;
-			trace( 'user array', _connection.userArray[0].id );
-			
-			trace( 'username:', user.name );
 			
 			_dispatcher.dispatchEvent( event );
 		}
@@ -89,7 +86,6 @@ package elan.fla11.roborun.utils
 			event.userCount = _connection.userCount;
 			event.userArray = _connection.userArray;
 
-			trace( 'user array', _connection.userArray[0].details.userName );
 			trace( _connection.userArray );
 			
 			_dispatcher.dispatchEvent( event );

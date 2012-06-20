@@ -5,11 +5,10 @@ package elan.fla11.roborun.view.robots
 
 	public class WheelieRobot extends RobotBase
 	{
-		public function WheelieRobot( userID:String )
+		public function WheelieRobot( userDetails:Object )
 		{
 			init();
-			_userID = userID;
-			super();
+			super(userDetails);
 		}
 		
 		private function init(): void

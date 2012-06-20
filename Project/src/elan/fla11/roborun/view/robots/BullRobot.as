@@ -5,11 +5,10 @@ package elan.fla11.roborun.view.robots
 
 	public class BullRobot extends RobotBase
 	{
-		public function BullRobot( userID:String )
+		public function BullRobot( userDetails:Object )
 		{
 			init();
-			_userID = userID;
-			super();
+			super(userDetails);
 		}
 		
 		private function init(): void
