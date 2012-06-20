@@ -86,5 +86,10 @@ package elan.fla11.roborun.view.gui
 		{
 			_scrollerSlide.scrollThumbDown = 5;
 		}
+		
+		public function activateScroll():void
+		{
+			_scrollerSlide.activateScroll();
+		}
 	}
 }

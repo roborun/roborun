@@ -4,6 +4,8 @@ package elan.fla11.roborun.settings
 
 	public class GameSettings
 	{
+		public static const INSTRUCTIONS_URL	:String = 'http://www.eliasj.se/roborun/instructions/roboruninstructions.pdf';
+		
 		public static const LEVEL_URL			:String = 'levels.xml';
 
 		public static const STAGE_W				:uint = 1024;
@@ -14,7 +16,7 @@ package elan.fla11.roborun.settings
 		public static const BORDER_THICKNESS_Y	:uint = 80; // 70
 	 	public static const BORDER_THICKNESS_X	:uint = 44; // 34
 
-	 	public static const CHOOSE_CARD_TIME	:uint = 10; // Ange sekunder
+	 	public static const CHOOSE_CARD_TIME	:uint = 30; // Ange sekunder
 		
 		
 	 	public static const ROTATION_SPEED		:uint = 5;

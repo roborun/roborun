@@ -7,7 +7,12 @@ package
 	import elan.fla11.roborun.events.StartEvent;
 	import elan.fla11.roborun.models.LevelModel;
 	import elan.fla11.roborun.settings.GameSettings;
+	import elan.fla11.roborun.sound.ButtonSound;
+	import elan.fla11.roborun.sound.CardBannerSound;
+	import elan.fla11.roborun.sound.ChatSound;
+	import elan.fla11.roborun.sound.Sounds;
 	import elan.fla11.roborun.utils.LevelLoader;
+	import elan.fla11.roborun.utils.SoundManager;
 	import elan.fla11.roborun.view.levelobjects.LaserPlate;
 	import elan.fla11.roborun.view.levelobjects.LeftRotationPlate;
 	import elan.fla11.roborun.view.levelobjects.statics.HolePlate;
@@ -36,6 +41,15 @@ package
 		{
 			_levelMdb = new LevelModel();
 			_levelMdb.addEventListener(LvlsCompleteEvent.lvlsLoaded, onLevelsLoaded_startPages);
+			
+			initSounds();
+		}
+		
+		private function initSounds():void
+		{
+			SoundManager.addSound(Sounds.BUTTON, new ButtonSound);
+			SoundManager.addSound(Sounds.CARD_BANNER, new CardBannerSound);
+			SoundManager.addSound(Sounds.CHAT, new ChatSound);
 		}
 		
 		private function onLevelsLoaded_startPages( e:LvlsCompleteEvent ): void

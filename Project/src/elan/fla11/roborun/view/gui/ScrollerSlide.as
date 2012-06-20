@@ -17,6 +17,8 @@ package elan.fla11.roborun.view.gui
 		private var _scrollPos:Number;
 		private var _offset:Number;
 		
+		private var _scrollEnabled:Boolean;
+		
 		public function ScrollerSlide(trackHeight:uint)
 		{
 			_scrollEvent = new ScrollEvent(ScrollEvent.SCROLLING);
@@ -30,7 +32,13 @@ package elan.fla11.roborun.view.gui
 			_scrollerThumb.addEventListener(MouseEvent.MOUSE_DOWN, handleMouseDown_scroll);
 			addChild(_scrollerThumb);
 			
-			GameSettings.STAGE.addEventListener(MouseEvent.MOUSE_WHEEL, handleMouseWheel);
+		}
+		
+		public function activateScroll():void
+		{
+			if(!_scrollEnabled)
+				GameSettings.STAGE.addEventListener(MouseEvent.MOUSE_WHEEL, handleMouseWheel);
+			_scrollEnabled = true;
 		}
 		
 		private function handleMouseWheel(evt:MouseEvent):void

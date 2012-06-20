@@ -1,6 +1,8 @@
 package elan.fla11.roborun.view.gui
 {
 	import elan.fla11.roborun.ButtonGfx;
+	import elan.fla11.roborun.sound.Sounds;
+	import elan.fla11.roborun.utils.SoundManager;
 	
 	import flash.events.MouseEvent;
 	import flash.text.TextFieldAutoSize;
@@ -20,6 +22,12 @@ package elan.fla11.roborun.view.gui
 			useHandCursor = true;
 			
 			addEventListener(MouseEvent.MOUSE_OVER, handleMouseOver);
+			addEventListener(MouseEvent.CLICK, handleClick);
+		}
+		
+		private function handleClick(evt:MouseEvent):void
+		{
+			SoundManager.playSound(Sounds.BUTTON, .1);
 		}
 		
 		private function handleMouseOver(evt:MouseEvent):void
@@ -32,5 +40,6 @@ package elan.fla11.roborun.view.gui
 		{
 			Label.textColor = _color;
 		}
+		
 	}
 }

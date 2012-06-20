@@ -1,9 +1,13 @@
 package elan.fla11.roborun.view.pages
 {
 	import elan.fla11.roborun.GamePageGfx;
+	import elan.fla11.roborun.events.StartEvent;
 	import elan.fla11.roborun.settings.GameSettings;
+	import elan.fla11.roborun.utils.ConnectionManager;
 	import elan.fla11.roborun.view.gui.Button;
+	import elan.fla11.roborun.view.slideshow.SlideCollection;
 	
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
 	public class JoinGamePage extends PageBase
@@ -27,6 +31,8 @@ package elan.fla11.roborun.view.pages
 		private function handleJoinClicked(evt:MouseEvent):void
 		{
 			trace('Join clicked');
+			ConnectionManager.connect(GroupNameInput.Tf.text, {userName: UserNameInput.Tf.text, robot: SlideCollection.robotIndex, playerOrder:1});
+			dispatchEvent( new Event( StartEvent.START_GAME, true ) );
 		}
 	}
 }

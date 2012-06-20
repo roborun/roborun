@@ -60,7 +60,7 @@ package elan.fla11.roborun.view.gui
 				_listItems.push(new Button(GameSettings.BUTTON_COLOR));
 				_listItems[i].Label.text = LevelModel.levels[i].title;
 				_listItems[i].addEventListener(MouseEvent.CLICK, handleListItemClicked_showDetails);
-				_listItems[i].x = 5;
+				_listItems[i].x = 10;
 				_listItems[i].y = i*(_listItems[i].height+10);
 				_listContainer.addChild(_listItems[i]);
 			}
@@ -73,6 +73,7 @@ package elan.fla11.roborun.view.gui
 				_scroller.y = 12;
 				addChild(_scroller);
 				_scroller.addEventListener(ScrollEvent.SCROLLING, handleScrollEvent);
+				_scroller.activateScroll();
 			}
 		}
 		

@@ -5,6 +5,8 @@ package elan.fla11.roborun.view.pages
 	import elan.fla11.roborun.events.ButtonEvent;
 	import elan.fla11.roborun.models.LevelModel;
 	import elan.fla11.roborun.settings.GameSettings;
+	import elan.fla11.roborun.sound.Sounds;
+	import elan.fla11.roborun.utils.SoundManager;
 	import elan.fla11.roborun.view.gui.Button;
 	import elan.fla11.roborun.view.gui.List;
 	import elan.fla11.roborun.view.gui.Scroller;
@@ -16,8 +18,6 @@ package elan.fla11.roborun.view.pages
 	{
 		
 		public const _offset:Number = 32;
-		
-		private var _chooseBtn:Button;
 		private var _list:List;
 		private var _idx:uint;
 		
@@ -45,6 +45,7 @@ package elan.fla11.roborun.view.pages
 		
 		private function handleCloseClicked(evt:MouseEvent):void
 		{
+			SoundManager.playSound(Sounds.BUTTON, .1);
 			dispatchEvent(new ButtonEvent(ButtonEvent.CLOSE));
 		}
 		

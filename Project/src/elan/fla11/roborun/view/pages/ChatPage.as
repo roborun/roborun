@@ -9,7 +9,9 @@ package elan.fla11.roborun.view.pages
 	import elan.fla11.roborun.events.ConnectionEvent;
 	import elan.fla11.roborun.events.ScrollEvent;
 	import elan.fla11.roborun.settings.GameSettings;
+	import elan.fla11.roborun.sound.Sounds;
 	import elan.fla11.roborun.utils.ConnectionManager;
+	import elan.fla11.roborun.utils.SoundManager;
 	import elan.fla11.roborun.view.gui.Button;
 	import elan.fla11.roborun.view.gui.Scroller;
 	
@@ -77,13 +79,12 @@ package elan.fla11.roborun.view.pages
 			_scroller.x = _chatMask.x + _chatMask.width;
 			_scroller.y = _chatMask.y;
 			
-			// MouseWheel ska bara aktiveras efter scrollen har startat.
-			
+			checkSize();
 		}
 		
 		private function handleScroll(evt:ScrollEvent):void
 		{
-			_chatPos = -_scroller.scrollPosition*(_chat.chatWindow.height - _chatMask.height) +_chatMask.y;
+			_chatPos = -_scroller.scrollPosition*(_chat.chatWindow.height - _chatMask.height)+_chatMask.y;
 			TweenLite.from(_chat.chatWindow, .5, {y:_chat.chatWindow.y, ease:Quad.easeOut});
 			TweenLite.to(_chat.chatWindow, .5, {y:_chatPos, ease:Quad.easeOut});
 		}
@@ -102,17 +103,28 @@ package elan.fla11.roborun.view.pages
 		private function onChatMsgReceived(evt:ConnectionEvent):void
 		{
 			_chat.chatWindow.appendText(evt.message.user + ': ' +evt.message.text+'\n');
+			trace('SENDER: ', evt.message.sender, 'PLAYER ID: ',  _players[0].id, evt.message.sender != _players[0].id);
+			dispatchEvent( new ConnectionEvent(ConnectionEvent.MESSAGE_RECEIVED) );
+			checkSize();
+		}
+		
+		private function checkSize():void
+		{
 			if(_chat.chatWindow.height > _chatMask.height)
 			{
 				_scroller.visible = true;
 				if(_chat.chatWindow.height > _chatMask.height)
+				{
 					_scroller.msgScroll();
+					_scroller.activateScroll();
+				}
 			}
-			dispatchEvent( new Event(Event.CHANGE) );
+			
 		}
 		
 		private function handleCloseClicked(evt:MouseEvent):void
 		{
+			SoundManager.playSound(Sounds.BUTTON, .1);
 			dispatchEvent(new ButtonEvent(ButtonEvent.CLOSE));
 		}
 		

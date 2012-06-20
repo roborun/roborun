@@ -7,7 +7,10 @@ package elan.fla11.roborun.view.pages
 	import elan.fla11.roborun.TimerTextField;
 	import elan.fla11.roborun.events.GameEvent;
 	import elan.fla11.roborun.settings.GameSettings;
+	import elan.fla11.roborun.sound.Sounds;
+	import elan.fla11.roborun.utils.SoundManager;
 	import elan.fla11.roborun.utils.SpritePool;
+	import elan.fla11.roborun.view.GameCard;
 	import elan.fla11.roborun.view.gui.CardOrderPlop;
 	
 	import flash.display.Bitmap;
@@ -54,13 +57,18 @@ package elan.fla11.roborun.view.pages
 		
 		public function dealCards( numCards:uint ): void
 		{
+			_cards = [];
+			SpritePool.clearChoosenCards();
+			
 			for (var i:int = 0; i < numCards; ++i) 
 			{
-				_cards.push( SpritePool.getCard() );
+				_cards.push( new GameCard() );
 				_cards[i].shuffle();
 				_cards[i].x = i * 105 + 40;
+				trace( 'cards x', _cards[i].x );
 				_cards[i].y = 41;
 				_cards[i].alpha = 0;
+				_cards[i].isOccupied = false;
 				addChild( _cards[i] );
 			}
 			
@@ -78,7 +86,6 @@ package elan.fla11.roborun.view.pages
 				_plops[j].y = 53;
 				_plops[j].alpha = 0;
 				_plops[j].index = j;
-				trace( _plops[j].index );
 				_plops[j].addEventListener(MouseEvent.MOUSE_DOWN, onPlopMouseDown_startMove);
 				_cards[j].isOccupied = true;
 				addChild( _plops[j] );
@@ -131,13 +138,15 @@ package elan.fla11.roborun.view.pages
 			{
 				_plops[i].removeEventListener(MouseEvent.MOUSE_DOWN, onPlopMouseDown_startMove);
 				SpritePool.choosenCard( _cards[ _plops[i].index ] );
+				removeChild( _plops[i] );
 			}
 			trace( _cards.length );
 			
-			for (var j:int = _cards.length; j >= 0; --j) 
+			for (var j:int = _cards.length -1; j >= 0; --j) 
 			{
+				trace(' remove card')
+				if( contains( _cards[j] ) ) removeChild( _cards[j] );		
 				SpritePool.returnCard( _cards[j] );
-				_cards.splice( j, 1 );
 			}
 			
 			dispatchEvent( new GameEvent(GameEvent.TIMES_UP) );

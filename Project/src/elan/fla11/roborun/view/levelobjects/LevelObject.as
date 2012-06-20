@@ -4,6 +4,8 @@ package elan.fla11.roborun.view.levelobjects
 	import elan.fla11.roborun.settings.GameSettings;
 	
 	import flash.display.Bitmap;
+	import flash.display.DisplayObject;
+	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	
 	/**
@@ -17,7 +19,7 @@ package elan.fla11.roborun.view.levelobjects
 		/**
 		 * Sprite that contains the graphics of the object. Need to send in objectSrc
 		 **/
-		protected var _object		:Sprite;
+		protected var _object		:MovieClip;
 		private var _objectGfx		:Bitmap;
 		
 		public function LevelObject( objectSrc:Class = null, withPlate:Boolean = true )
@@ -38,7 +40,7 @@ package elan.fla11.roborun.view.levelobjects
 			
 			if( objectSrc != null )
 			{
-				_object = new Sprite();
+				_object = new MovieClip();
 				_object.x = _object.y = GameSettings.GRID_SIZE * .5;
 				addChild( _object );
 				

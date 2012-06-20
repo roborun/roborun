@@ -13,9 +13,12 @@ package elan.fla11.roborun.controllers
 	import elan.fla11.roborun.models.LevelData;
 	import elan.fla11.roborun.models.LevelModel;
 	import elan.fla11.roborun.settings.GameSettings;
+	import elan.fla11.roborun.sound.Sounds;
 	import elan.fla11.roborun.utils.ConnectionManager;
+	import elan.fla11.roborun.utils.KeyboardManager;
 	import elan.fla11.roborun.utils.LevelCamera;
 	import elan.fla11.roborun.utils.LevelLoader;
+	import elan.fla11.roborun.utils.SoundManager;
 	import elan.fla11.roborun.utils.SpritePool;
 	import elan.fla11.roborun.view.GameCard;
 	import elan.fla11.roborun.view.gui.Button;
@@ -30,7 +33,11 @@ package elan.fla11.roborun.controllers
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
+	import flash.ui.Keyboard;
 	import flash.utils.setTimeout;
 
 	public class GameController extends Sprite
@@ -50,12 +57,26 @@ package elan.fla11.roborun.controllers
 		private var _gameMenuGfx		:GameBackground;
 		
 		private var _userID				:String;
+		private var _userDetails		:Object;
+		private var _userOrder			:uint;
+
+		private var _coUserOrder		:uint;
 		
 		private var _players			:Array;
 		
 		private var _chatPage			:ChatPage;
 		private var _chatBtn			:ChatBtnGfx;
 		private var _infoBtn			:InfoBtnGfx;
+		private var _isChatOpen			:Boolean;
+		
+		private var _gameObject			:Object;
+		private var _order				:Array;
+		private var _roundCount			:uint;
+		private var _orderIdx			:uint;
+		private var _levelFunctionCount :uint;
+		
+		private var _listeners			:Boolean;
+
 		
 		public function GameController()
 		{
@@ -66,7 +87,7 @@ package elan.fla11.roborun.controllers
 		{
 			_robots = new Vector.<RobotBase>();
 			
-			_players = [];
+			_players = [0,1];
 			_cards = [];
 			_levelLoader = new LevelLoader();
 			_camera = new LevelCamera();
@@ -79,6 +100,13 @@ package elan.fla11.roborun.controllers
 			_world = new Sprite();
 			addChild( _world );
 
+			initButtons();
+			
+			ConnectionManager.dispatcher.addEventListener(ConnectionEvent.CONNECTED, onConnected_initNewGame);
+		}
+		
+		private function initButtons(): void
+		{
 			_infoBtn = new InfoBtnGfx;
 			_infoBtn.x = 768;
 			_infoBtn.y = 615;
@@ -88,50 +116,76 @@ package elan.fla11.roborun.controllers
 			_chatBtn.x = 879;
 			_chatBtn.y = 615;
 			_chatBtn.gotoAndStop( 0 );
-			_chatBtn.addEventListener(MouseEvent.CLICK, handleChatBtnClicked);
-			addChild(_chatBtn);
+			addChild(_chatBtn);		
 			
 			_chatPage = new ChatPage();
-			_chatPage.addEventListener(Event.CHANGE, onChatChange_playChatBtn);
+		}
+		
+		private function handleInfoBtnClicked(evt:MouseEvent = null):void
+		{
+			navigateToURL(new URLRequest(GameSettings.INSTRUCTIONS_URL), '_blank');
+			SoundManager.playSound(Sounds.BUTTON, .1);
+		}
+		
+		
+		private function initButtonListeners():void
+		{
+			_listeners = true;
+			_infoBtn.addEventListener(MouseEvent.CLICK, handleInfoBtnClicked);
+			_chatBtn.addEventListener(MouseEvent.CLICK, handleChatBtnClicked);
+			GameSettings.STAGE.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			_chatPage.addEventListener(ConnectionEvent.MESSAGE_RECEIVED, onChatChange_playChatBtn);
 			_chatPage.addEventListener(ButtonEvent.CLOSE, handleChatCloseBtnClicked);
-			
-			
-			ConnectionManager.dispatcher.addEventListener(ConnectionEvent.CONNECTED, onConnected_initNewGame);
+		}
+		
+		private function onKeyDown( e:KeyboardEvent ): void
+		{
+			trace( ' keydown ', e.keyCode, e.keyCode == Keyboard.C );
+			switch( e.keyCode )
+			{
+				case Keyboard.C:
+					if( !_isChatOpen ) handleChatBtnClicked();
+					break;
+				
+				case Keyboard.I:
+					if( !_isChatOpen ) handleInfoBtnClicked();
+					
+			}
 		}
 		
 		private function onChatChange_playChatBtn( e:Event ): void
 		{
+			SoundManager.playSound(Sounds.CHAT, .02);
 			_chatBtn.play();
 		}
 		
-		private function handleChatBtnClicked(evt:MouseEvent):void
+		private function handleChatBtnClicked(evt:MouseEvent = null):void
 		{
+			SoundManager.playSound(Sounds.BUTTON, .1);
+			if( _camera != null ) _camera.deactivate();
 			_chatBtn.gotoAndStop( 0 );
 			addChild(_chatPage);
 			_chatPage.activateEnter();
-			_camera.deactivate();
+			_isChatOpen = true;
 		}
 		
-		private function handleChatCloseBtnClicked(evt:ButtonEvent):void
+		private function handleChatCloseBtnClicked(evt:ButtonEvent = null):void
 		{
 			_chatBtn.gotoAndStop( 0 );
 			removeChild(_chatPage);
 			_chatPage.deactivateEnter();
-			_camera.activate();
+			_isChatOpen = false;
+			if( _camera != null ) _camera.activate();
 		}
 		
 		
 		private function onConnected_initNewGame( e:ConnectionEvent ): void
 		{
-			_levelLoader.loadLevel( LevelModel.levels[e.user.details.level].source );
-			_levelLoader.addEventListener(Event.COMPLETE, onComplete_startGame);
-			_level = _levelLoader.level;
-			_world.addChild( _level );
-			
-			_robots[0] = addRobot( e.user.details.robot, e.user.id );
-			_world.addChild( _robots[0] );
 			
 			_userID = e.user.id;
+			_userOrder = e.user.details.playerOrder;
+			_userDetails = e.user.details;
+			
 			
 			addEventListener(Event.ENTER_FRAME, onLoop);
 			ConnectionManager.dispatcher.addEventListener(ConnectionEvent.USER_ADDED, onUserAdded_addNewPlayer);
@@ -145,125 +199,164 @@ package elan.fla11.roborun.controllers
 			var idx : uint = e.userCount -1;
 			_chatPage.players = e.userArray;
 			
-			if( idx < _levelLoader.startPositions.length )
+			_coUserOrder = e.user.details.playerOrder;
+			
+			// Joining player
+			if( e.user.details.level != undefined)
 			{
-				_robots[idx] = addRobot( e.user.details.robot, e.user.id );
-				_world.addChild( _robots[idx] );
-
-
-				for (var i:int = 0; i < e.userArray.length; i++) 
-				{
-					for (var j:int = 0; j < _robots.length; j++) 
-					{
-						trace( _robots[j].userID, e.userArray[i].id ,_robots[j].userID == e.userArray[i].id, i, j ,e.userArray[i].name , e.userArray[i].stamp );
-						
-						if( _robots[j].userID == e.userArray[i].id )
-						{
-
-							_robots[j].x = _levelLoader.startPositions[i].x;
-							_robots[j].y = _levelLoader.startPositions[i].y;
-							
-						}
-					}
-					
-				}
+				_levelLoader.loadLevel( LevelModel.levels[e.user.details.level].source );
+				_robots.push( addRobot( e.user.details.robot, e.user.id ) );
+				_robots.push( addRobot( _userDetails.robot, _userID ) );
+			}
+			// Host player
+			else
+			{
+				_levelLoader.loadLevel( LevelModel.levels[_userDetails.level].source );
+				_robots.push( addRobot( _userDetails.robot, _userID ) );
+				_robots.push( addRobot( e.user.details.robot, e.user.id ) );
 			}
 			
-			else trace( 'to many users');
+			_levelLoader.addEventListener(Event.COMPLETE, onComplete_startGame);
+			_level = _levelLoader.level;
+			_world.addChild( _level );		
 			
-			trace( e.userCount, _levelLoader.startPositions.length, e.userCount == _levelLoader.startPositions.length );
-			
-			if( e.userCount == _levelLoader.startPositions.length )
-			{
-				addCards();
-			}
 		}
 		
 		private function onDataReceived_playRound( e:ConnectionEvent ): void
 		{
-			_players.push( e.gameData );
-			trace( 'GameData', e.gameData, _players.length, e.userCount );
+			if(_listeners == false)
+				initButtonListeners();
 			
-			if( _players.length >= e.userCount -1 )
-			{
-				playRound( 0 );
-			}
+
+			_players[ _coUserOrder ] = e.gameData;
+			
+			_roundCount = 0;
+			_orderIdx = 0;
+			playRound();	
 		}
 		
-		private function playRound( time:uint ): void
+		private function playRound(): void
 		{
-
-			//_players.splice( 0, 0, {userID: _userID, cards: _cards}  );
-			trace( _players[0].points[0] );
-			var order : Array = [-1];
-			for (var i:int = 0; i < _players.length; i++) 
+			
+			if( _players[ _userOrder ].points[ _roundCount ] >= _players[ _coUserOrder ].points[ _roundCount ] )
 			{
-				if( _players[i].points[time] > order[i] )
-				{
-					order.splice( 0, 0, i );
-				}
-				
-				trace( _players[i].points[0] );
+				_order = [ _userOrder, _coUserOrder ]; 
 			}
 			
-			trace(' order all:', order );
+			else if( _players[ _userOrder ].points[ _roundCount ] < _players[ _coUserOrder ].points[ _roundCount ] )
+			{
+				_order = [ _coUserOrder, _userOrder ]; 
+			}
+
+			if( _roundCount < 5 )
+			{
+				movePlayer();
+			}
+			else
+			{
+				addCards();
+			}
 			
-			trace( 'order:', order.length, _players[ order[0] ] ); 
-			order.pop();
-			trace( 'order2:', order.length,  _players[ order[1] ] ); 
-			
-			switch( _players[ order[0] ].types[time] )
+		}
+		
+		private function movePlayer(): void
+		{
+			switch( _players[ _order[_orderIdx] ].types[_roundCount] )
 			{
 				case GameSettings.BACK_UP:
 					trace(' back up' ); 
-					_robots[0].move( -1 );
+					_robots[_order[_orderIdx]].move( -1 );
 					break;
 				
 				case GameSettings.MOVE_ONE:
 					trace(' move 1' );
-					_robots[0].move( 1 );
+					_robots[_order[_orderIdx]].move( 1 );
 					
 					break;
 				
 				case GameSettings.MOVE_TWO:
-					_robots[0].move( 2 );
-					trace(' move 2' );
-					
+					_robots[_order[_orderIdx]].move( 2 );
+					trace(' move 2' );	
 					break;
 				
 				case GameSettings.MOVE_THREE:
 					trace(' move 3' );
-					_robots[0].move( 3 );
-					
-					
+					_robots[_order[_orderIdx]].move( 3 );
 					break;
 				
 				case GameSettings.TURN_LEFT:
-					_robots[0].rotate( -1 );					
+					trace(' rotate left');
+					_robots[_order[_orderIdx]].rotate( -90 );					
 					break;
 				
 				case GameSettings.TURN_RIGHT:
-					_robots[0].rotate( 1 );					
+					trace(' rotate right');
+					_robots[_order[_orderIdx]].rotate( 90 );					
 					break;
 				
 				case GameSettings.U_TURN:
-					
+					trace(' u turn');
+					_robots[_order[_orderIdx]].rotate( 180 );					
 					break;
+			}
+			
+			_robots[_order[_orderIdx]].addEventListener(GameEvent.MOVED, onRobotMoved);
+		
+
+		}
+		
+		private function onRobotMoved( e:GameEvent ): void
+		{
+			_robots[_order[_orderIdx]].removeEventListener(GameEvent.MOVED, onRobotMoved);
+			if( _orderIdx < 1 )
+			{
+				_orderIdx++;
+				movePlayer();
+			}
+			else
+			{
+				_levelFunctionCount = 0;
+				for (var i:int = 0; i < _robots.length; i++) 
+				{
+					_robots[i].checkLevelFunctions();
+					_robots[i].addEventListener(GameEvent.LEVEL_FUNCTIONS, onLevelFunctionComplete);
+				}
 			}
 		}
 		
+		private function onLevelFunctionComplete( e:GameEvent ): void
+		{
+			trace( ' level functions complete');
+			_levelFunctionCount++;
+			
+			if( _levelFunctionCount > 1 )
+			{
+				removeChild( _cards[ _roundCount ] );
+				SpritePool.returnCard( _cards[ _roundCount  ] );
+				_roundCount++;
+				_orderIdx = 0;
+				playRound();				
+			}
+		}
 		
 		private function onComplete_startGame( e:Event ): void
 		{
-			_numCard = 9;
-			_robots[0].x = _levelLoader.startPositions[0].x;
-			_robots[0].y = _levelLoader.startPositions[0].y;			
+			_numCard = 9;		
 			_camera.setWorld( _world );
-			
+					
+			for (var i:int = 0; i < 2; i++) 
+			{
+				_robots[ i ].x = _levelLoader.startPositions[ i ].x;
+				_robots[ i ].y = _levelLoader.startPositions[ i ].y;
+				_robots[ i ].setStartPos();
+				_world.addChild( _robots[ i ] );		
+			}
+
 			_world.addEventListener(MouseEvent.CLICK, onClick_add);
 			_gameMenuGfx.addEventListener(MouseEvent.CLICK, onClick_remove);
 			
-			
+			addCards();
+
 		}
 		
 		private function onClick_add( e:MouseEvent ): void
@@ -282,21 +375,26 @@ package elan.fla11.roborun.controllers
 			_cardBanner.y = 515;
 			addChild( _cardBanner );
 			_cardBanner.dealCards( _numCard );
-			TweenLite.to( _cardBanner, 1, {x: 0, delay: 1} );
+			TweenLite.to( _cardBanner, 1, {x: 0, delay: 1, onStart:playSound} );
 			
 			_cardBanner.addEventListener(GameEvent.TIMES_UP, onTimesUp_tweenCardBanner);
 			
 		}
 		
+		private function playSound():void
+		{
+			SoundManager.playSound(Sounds.CARD_BANNER, .2);
+		}
 		private function onTimesUp_tweenCardBanner( e:GameEvent ): void
 		{
-			TweenLite.to( _cardBanner, 1, {x: GameSettings.STAGE_W, delay: 1, onComplete: addChoosenCards});		
+			TweenLite.to( _cardBanner, 1, {x: GameSettings.STAGE_W, delay: 1, onStart:playSound, onComplete: addChoosenCards});		
 		}
 		
 		private function addChoosenCards(): void
 		{
-			_players = [];
 			_cards = SpritePool.getChoosenCards();
+			
+			trace( ' num of cards:', _cards.length );
 			
 			var points : Array = []; 
 			var types : Array = []; 
@@ -311,11 +409,18 @@ package elan.fla11.roborun.controllers
 				points.push( _cards[i].point );
 				types.push( _cards[i].type );
 			}
-			
-			TweenMax.allTo( _cards, .2, {alpha: 1}, .3);
-			_players.push( {userID: _userID, points: points, types: types} );
+			_gameObject = {userID: _userID, points: points, types: types};
+			_players[ _userOrder ] = _gameObject;
 			trace( 'current number of players:',_players.length );
-			ConnectionManager.sendData( {userID: _userID, points: points, types: types} );
+						
+			
+			TweenMax.allTo( _cards, .2, {alpha: 1}, .3, onComplete_sendGameObject);
+			
+		}
+		
+		private function onComplete_sendGameObject(): void
+		{
+			ConnectionManager.sendData( _gameObject );
 		}
 		
 		private function addRobot( robotID:uint, userID:String ): RobotBase
