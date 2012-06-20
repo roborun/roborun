@@ -6,6 +6,7 @@ package elan.fla11.roborun.events
 	{
 		public static const POWER_DOWN		:String = 'powerDown';
 		public static const DEAD			:String = 'dead';
+		public static const ON_FLAG			:String = 'dead';
 		public static const TIMES_UP		:String = 'timesUp';
 		public static const MOVED			:String = 'moved';
 		public static const LEVEL_FUNCTIONS :String = 'levelFunctions';
