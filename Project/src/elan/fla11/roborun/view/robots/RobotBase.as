@@ -47,8 +47,7 @@ package elan.fla11.roborun.view.robots
 			_prevRot = GameSettings.RIGHT;
 			
 			_levelDesign = new BitmapData(40,20);
-			
-			_gfx.scaleX = _gfx.scaleY = .5;
+		
 			_gfx.x = GameSettings.GRID_SIZE *.5;
 			_gfx.y = GameSettings.GRID_SIZE *.5;
 			addChild( _gfx );

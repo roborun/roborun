@@ -6,6 +6,7 @@ package elan.fla11.roborun.utils
 	import elan.fla11.roborun.view.levelobjects.LeftRotationPlate;
 	import elan.fla11.roborun.view.levelobjects.LevelObject;
 	import elan.fla11.roborun.view.levelobjects.RightRotationPlate;
+	import elan.fla11.roborun.view.levelobjects.statics.FlagPlate;
 	import elan.fla11.roborun.view.levelobjects.statics.HolePlate;
 	import elan.fla11.roborun.view.levelobjects.statics.StartPlate;
 	import elan.fla11.roborun.view.levelobjects.statics.WallPlate;
@@ -126,39 +127,7 @@ package elan.fla11.roborun.utils
 						case ColorCode.BAND_PLATE_DOWN:
 							levelObject = new StraightTrackPlate( GameSettings.DOWN );
 							break;
-
-						case ColorCode.BAND_LEFT_TURN_RIGHT:
-							levelObject = new LeftTrackPlate( GameSettings.RIGHT );
-							break;
-
-						case ColorCode.BAND_LEFT_TURN_LEFT:
-							levelObject = new LeftTrackPlate( GameSettings.LEFT );
-							break;
-
-						case ColorCode.BAND_LEFT_TURN_UP:
-							levelObject = new LeftTrackPlate( GameSettings.UP );
-							break;
-
-						case ColorCode.BAND_PLATE_DOWN:
-							levelObject = new LeftTrackPlate( GameSettings.DOWN );
-							break;
-
-						case ColorCode.BAND_RIGHT_TURN_RIGHT:
-							levelObject = new RightTrackPlate( GameSettings.RIGHT );
-							break;
-
-						case ColorCode.BAND_RIGHT_TURN_LEFT:
-							levelObject = new RightTrackPlate( GameSettings.LEFT );
-							break;
-
-						case ColorCode.BAND_RIGHT_TURN_UP:
-							levelObject = new RightTrackPlate( GameSettings.UP );
-							break;
-
-						case ColorCode.BAND_RIGHT_TURN_DOWN:
-							levelObject = new RightTrackPlate( GameSettings.DOWN );
-							break;
-
+						
 						case ColorCode.LEFT_ROTATION:
 							levelObject = new LeftRotationPlate();
 							break;
@@ -173,7 +142,8 @@ package elan.fla11.roborun.utils
 							break;
 
 						case ColorCode.FLAG_PLATE:
-							levelObject = new StartPlate();
+							trace( 'FLAG:', _flagPositions.length + 1 );
+							levelObject = new FlagPlate( _flagPositions.length + 1 );
 							_flagPositions.push( new Point( col * GameSettings.GRID_SIZE, row * GameSettings.GRID_SIZE ));
 							break;
 						
