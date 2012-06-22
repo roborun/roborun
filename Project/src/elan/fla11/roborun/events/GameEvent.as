@@ -10,6 +10,7 @@ package elan.fla11.roborun.events
 		public static const TIMES_UP		:String = 'timesUp';
 		public static const MOVED			:String = 'moved';
 		public static const LEVEL_FUNCTIONS :String = 'levelFunctions';
+		public static const ON_FLAG			 :String = 'onFlag';
 		
 		public function GameEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
